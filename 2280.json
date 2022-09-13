@@ -1,0 +1,232 @@
+{
+  "spider_name": "unified-us-tx-ssb-enforcement-actions",
+  "api_table": "legal_api_docs",
+  "meta_table": "enforcements",
+  "jurisdiction": "US-TX",
+  "agency": "Texas State Securities Board-Enforcement Actions Administrative",
+  "agency_id": 300002,
+  "short_name": "TX-SSB",
+  "base_url": "https://www.ssb.texas.gov/",
+  "content_url": "https://www.ssb.texas.gov/news-publications/enforcement-actions-administrative",
+  "specification": "https://docs.google.com/document/d/1_HLf59QBhUfliSxwqgPx6XXHI8QFoRC5UQkLwq4I9Po/edit",
+  "configurations": {
+    "category_conversion": [
+      {
+        "category_approach": "containing",
+        "conversion_map": {
+          "Cease and Desist": "Cease and Desist",
+          "Consent Order": "Consent Order",
+          "Agreed Order": "Consent Order",
+          "Suspended": "Suspended Order",
+          "Revocation": "Revocation Order",
+          "Fine": "Civil Money Penalty"
+        },
+
+        "default_category": "Enforcement Order"
+      }
+    ],
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["articles_step"]
+      },
+
+      "articles_step": {
+        "description": "collect list of articles for the main page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["div.view-content > div"]
+        },
+        "next_step": ["items_step"]
+      },
+      ">> next_page": {
+        "description": "Process pagination",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["li.pager__item.pager__item--next > a"]
+        },
+        "next_step": ["articles_step"]
+      },
+      "items_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "path": ["div.views-row"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.news-body.news-teaser > h4 > a > span"]
+          },
+          "session_year": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.news-date.left"],
+            "regex": ["19\\d{2}", "20\\d{2}"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.news-date.left"],
+            "regex": "\\w+ \\d{1, 2}",
+            "code_filter": "[date + ' ' + str(kwargs.get('doc').get('session_year')) for date in results]"
+          },
+
+          "title_prefix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.news-date.left"],
+            "regex": "\\w+ \\d{1, 2}",
+            "code_filter": "[date + ' ' + str(kwargs.get('doc').get('session_year')) for date in results]"
+          },
+          "title_separator": "--",
+          "pdf_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.news-body.news-teaser > h4 > a"]
+          },
+
+          "scraped_category": {
+            "path": "div.news-body.news-teaser > div",
+            "is_text": true
+          },
+          "category": "conversion",
+          "effective_date": {
+            "path": "div.view-content > div",
+            "is_text": true
+          },
+
+          "summary_text": {
+            "is_text": true,
+            "is_single": true,
+            "path": ["div.news-body.news-teaser > div"]
+          },
+          "incomplete_pub_date": true
+        },
+        "parent_context": "articles_step",
+        "next_step": ["step_before_condition"]
+      },
+
+      "step_before_condition": {
+        "description": "step to collect the respondent",
+        "save_document": false,
+        "doc": {
+          "title": {
+            "path": "div.news-body.news-teaser > h4 > a > span",
+            "is_text": true,
+            "is_single": true
+          }
+        },
+        "context": {
+          "path": "div.views-row"
+        },
+        "next_step": ["if_one_document_step", "if_two_document_step"]
+      },
+
+      "if_one_document_step": {
+        "description": "If the title begins with notice of hearing, get the respondant from the title",
+        "save_document": false,
+        "context": {
+          "path": ["div.views-row"],
+          "code_filter": "results if 'Notice of Hearing' in kwargs.get('doc').get('title') else []"
+        },
+        "next_step": ["if_respondent_in_title"]
+      },
+
+      "if_two_document_step": {
+        "description": "If the title does not begin with 'Notice of Hearing', get the respondant from the summary",
+        "save_document": false,
+        "context": {
+          "path": ["div.views-row"],
+          "code_filter": "results if 'Notice of Hearing' not in kwargs.get('doc').get('title') else []"
+        },
+        "next_step": ["if_respondent_in_summary"]
+      },
+
+      "if_respondent_in_title": {
+        "description": "get respondent from summary",
+        "save_document": true,
+        "doc": {
+          "respondent": {
+            "path": "div.news-body.news-teaser > h4 > a > span",
+            "regex": "(?<=Notice of Hearing filed against)(?s)(.*$)"
+          }
+        }
+      },
+
+      "if_respondent_in_summary": {
+        "description": "get respondent from summary",
+        "save_document": true,
+        "doc": {
+          "respondent": {
+            "path": "div.news-body.news-teaser > div",
+            "regex": "In the Matter of (.*?):"
+          }
+        }
+      }
+    }
+  }
+}
