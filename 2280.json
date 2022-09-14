@@ -187,7 +187,7 @@
       },
 
       "if_one_document_step": {
-        "description": "If the title begins with notice of hearing, get the respondant from the title",
+        "description": "If the title begins with notice of hearing, get the respondent from the title",
         "save_document": false,
         "context": {
           "path": ["div.views-row"],
@@ -197,7 +197,7 @@
       },
 
       "if_two_document_step": {
-        "description": "If the title does not begin with 'Notice of Hearing', get the respondant from the summary",
+        "description": "If the title does not begin with 'Notice of Hearing', get the respondent from the summary",
         "save_document": false,
         "context": {
           "path": ["div.views-row"],
@@ -207,7 +207,7 @@
       },
 
       "if_respondent_in_title": {
-        "description": "get respondent from summary",
+        "description": "get respondent from title",
         "save_document": true,
         "doc": {
           "respondent": {
@@ -224,6 +224,55 @@
           "respondent": {
             "path": "div.news-body.news-teaser > div",
             "regex": "In the Matter of (.*?):"
+          }
+        }
+      },
+
+      "step_before_condition_for_unified_docket_id": {
+        "description": "step to collect the unified_docket_id",
+        "save_document": false,
+        "doc": {
+          "title": {
+            "path": "div.news-body.news-teaser > h4 > a > span",
+            "is_text": true,
+            "is_single": true
+          },
+          "context": {
+            "path": "div.views-row"
+          },
+          "next_step": [
+            "if_unified_docket_id_in_title",
+            "if_unified_docket_id_in_pdf"
+          ]
+        },
+
+        "if_unified_docket_id_in_title": {
+          "description": "if the title begins with 'Order No.' get the unified_docket_id from the title",
+          "save_document": false,
+          "context": {
+            "path": ["div.views-row"],
+            "code_filter": "results if title begins with 'Order No.' in kwargs.get('doc').get('title') else [] "
+          },
+          "next_step": ["get_unified_docket_id_from_title"]
+        },
+        "if_unified_docket_id_in_pdf": {
+          "description": "if_title_does not begin with 'Order No.' get the unified_docket_id from pdf",
+          "save_document": false,
+          "context": {
+            "path": ["div.views-row"],
+            "code_filter": "results if title does not begin with 'Order No.' in kwargs.get('doc').get('title') else [] "
+          },
+          "next_step": ["get_unified_docket_id_from_pdf"]
+        },
+
+        "get_unified_docket_id_from_title": {
+          "description": "get the unified_docket_id from the title",
+          "save_document": true,
+          "doc": {
+            "unified_docket_id": {
+              "path": "div.news-body.news-teaser > h4 > a > span",
+              "regex": "Order No.([sS]*)$"
+            }
           }
         }
       }
