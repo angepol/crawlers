@@ -1,0 +1,211 @@
+{
+  "spider_name": "unified-us-wi-wcrb-forms",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-WI",
+  "agency_name": "Wisconsin Compensation Rating Bureau - Forms",
+  "agency_id": 2100004,
+  "short_name": "WI-WCRB",
+  "pub_name": "Wisconsin Compensation Rating Bureau - Forms",
+  "pub_short_name": "WI-WCRB",
+  "base_url": "https://www.wcrb.org/",
+  "content_url": "https://www.wcrb.org/forms/",
+  "specification": "https://docs.google.com/document/d/14Bh3tYwrJXlf12uWnJlQNxYhR3iGzLWzIXjz9gvkH54/edit",
+  "recurring": {
+    "days_ago": 30,
+    "periodicity": "460 hours"
+  },
+  "configurations": {
+    "category_conversion": [
+      {
+        "conversion_map": {
+          "Endorsement": "Endorsement",
+          "Form": "Form",
+          "Guidance": "Guidance"
+        },
+        "default_category": "Guidance"
+      }
+    ],
+    "steps": {
+      "description": "Initializing steps, that should be performed by the current crawler.",
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "next_step": ["articles_step", "extra_page_step"]
+      },
+      "articles_step": {
+        "description": "Getting list of articles for the current page.",
+        "context": {
+          "path": "article.centeredElement > div div.leftText",
+          "tag_filter": "[tag for tag in results if 'Endorsements Acceptable' not in tag.text]"
+        },
+        "next_step": "parent_item_step"
+      },
+      "parent_item_step": {
+        "description": "Getting metadata of the current article.",
+        "save_document": false,
+        "doc": {
+          "custom_full_text": null,
+          "title": {
+            "path": "div.leftText > b > a:nth-of-type(1)"
+          },
+          "title_separator": "-",
+          "title_suffix": {
+            "path": "div.leftText",
+            "regex": "([A-Za-z].*[A-Za-z])",
+            "extract_tags": {
+              "path": ["b", "a"]
+            }
+          },
+          "scraped_category": {
+            "path": "div.leftText > b > a:nth-of-type(1)"
+          },
+          "category": "conversion",
+          "web_url": {
+            "path": "div.leftText > b > a:nth-of-type(1)",
+            "tag_filter": "[tag.attrs.get('onclick','') for tag in results if tag.attrs.get('onclick','')]",
+            "is_text_generated": true,
+            "is_url": false,
+            "is_text": true,
+            "regex": "window\\.open\\('(.*)'\\);",
+            "code_filter": "['https://www.wcrb.org/forms/' + r if r[0] != '/' else 'https://www.wcrb.org' + r for r in results] if results else 'https://www.wcrb.org/forms/'"
+          },
+          "pdf_url": {
+            "path": "div.leftText > b > a:nth-of-type(1)"
+          }
+        },
+        "context": {
+          "path": "body"
+        },
+        "next_step": ["pre_details_step", "find_date_in_pdf"]
+      },
+      "pre_details_step": {
+        "description": "preparation for details step.",
+        "save_document": false,
+        "context": {
+          "path": "body",
+          "code_filter": "[kwargs.get('doc').get('web_url')] if not kwargs.get('doc').get('pdf_url') else []"
+        },
+        "next_step": "details_step"
+      },
+      "details_step": {
+        "description": "getting full_text of the doc.",
+        "save_document": false,
+        "doc": {
+          "custom_full_text": null,
+          "html": {
+            "path": "#aspnetForm",
+            "extract_tags": {
+              "path": "script"
+            }
+          }
+        }
+      },
+      "find_date_in_pdf": {
+        "description": "Find date in pdf full text.",
+        "save_document": false,
+        "pre_generate_full_text": "pdf_url",
+        "doc": {
+          "incomplete_pub_date": true,
+          "pub_date": {
+            "path": "body",
+            "is_text_generated": true,
+            "regex": ["\\d{1,2}/\\d{1,2}/\\d{2,4}"]
+          }
+        },
+        "context": {
+          "path": "body"
+        },
+        "next_step": "child_articles_step"
+      },
+      "child_articles_step": {
+        "description": "Getting list of child articles for the current page.",
+        "is_parent": true,
+        "context": {
+          "path": "div.leftText > a"
+        },
+        "next_step": "child_item_step"
+      },
+      "child_item_step": {
+        "description": "Getting metadata of the current article.",
+        "doc": {
+          "custom_full_text": null,
+          "title_separator": "-",
+          "title_suffix": {
+            "path": "a"
+          },
+          "scraped_category": {
+            "path": "a"
+          },
+          "category": "conversion",
+          "web_url": {
+            "path": "body",
+            "is_current_url": true
+          },
+          "pdf_url": {
+            "path": "a"
+          }
+        },
+        "context": {
+          "path": "body"
+        },
+        "next_step": "find_date_in_pdf"
+      },
+      "extra_page_step": {
+        "description": "Getting list of articles for the current page.",
+        "context": {
+          "path": "article.centeredElement > div div.leftText a",
+          "tag_filter": "[tag for tag in results if 'Endorsements Acceptable' in tag.text]",
+          "is_url": true
+        },
+        "next_step": "extra_articles_step"
+      },
+      "extra_articles_step": {
+        "description": "Getting list of articles for the current page.",
+        "context": {
+          "path": "table > tbody > tr"
+        },
+        "next_step": "extra_item_step"
+      },
+      "extra_item_step": {
+        "description": "Getting metadata of the current article.",
+        "doc": {
+          "custom_full_text": null,
+          "title": {
+            "path": "td:nth-of-type(2) > a"
+          },
+          "title_separator": "-",
+          "title_suffix": null,
+          "title_prefix": {
+            "path": "td:nth-of-type(1)"
+          },
+          "category": "Endorsement",
+          "web_url": {
+            "path": "body",
+            "is_current_url": true
+          },
+          "pdf_url": {
+            "path": "td:nth-of-type(2) > a"
+          }
+        },
+        "context": {
+          "path": "body"
+        },
+        "next_step": "find_extra_date_in_pdf"
+      },
+      "find_extra_date_in_pdf": {
+        "description": "Find date in pdf full text.",
+        "pre_generate_full_text": "pdf_url",
+        "doc": {
+          "incomplete_pub_date": true,
+          "pub_date": {
+            "path": "body",
+            "is_text_generated": true,
+            "regex": ["\\d{1,2}-\\d{1,2}-\\d{2,4}", "\\d{1,2}-\\d{2,4}"],
+            "date_format": ["D-M-YYYY", "D-MM-YYYY", "D-M-YY", "D-MM-YY"],
+            "code_filter": "['1-' + r if r.count('-') == 1 else r for r in results]"
+          }
+        }
+      }
+    }
+  }
+}
