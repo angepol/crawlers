@@ -1,0 +1,159 @@
+{
+  "spider_name": "unified-us-pr-la-consumer-affars-laws",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-PR",
+  "agency": "[US] Puerto Rico Department of Consumer Affairs - Laws",
+  "agency_id": 59000003,
+  "short_name": "PR-LA",
+  "category": "Act",
+  "base_url": "https://www.daco.pr.gov/",
+  "content_url": "https://www.daco.pr.gov/recursos/legal/leyes/",
+  "specification": "https://docs.google.com/document/d/1A5e0dBuQEo7Gl6xcYGhUwBuNWsVvGOBmejh6WUOIArg/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": "articles_step"
+      },
+      "articles_step": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.fwpl-layout > div.fwpl-result.el-l5bbb > div.fwpl-row.el-fgtzfa > div.fwpl-col.el-f7crym"
+          ]
+        },
+        "next_step": ["items_step"]
+      },
+      "items_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["div > h3 > a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div > h3 > a"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div > h3 > a"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div > div.fwpl-item.el-9il8pu.displayinline"]
+          },
+          "title_prefix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div > div.sec_date > b > span.fnt_fn "]
+          },
+          "summary_text": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div.fwpl-item.el-t5uizk > p"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["details_step"],
+        "parent_context": "articles_step"
+      },
+      "details_step": {
+        "description": "Getting full_text of the doc",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "doc_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div.cus_sidebar_button > a"]
+          },
+          "incomplete_pub_date": false
+        }
+      }
+    }
+  }
+}

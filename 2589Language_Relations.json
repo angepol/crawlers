@@ -1,0 +1,147 @@
+{
+  "spider_name": "unified-us-pr-la-consumer-affars-laws",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-PR",
+  "agency": "Puerto Rico Department of Consumer Affairs - Laws",
+  "agency_id": 59000003,
+  "short_name": "PR-LA",
+  "category": "Act",
+  "base_url": "https://www.daco.pr.gov/",
+  "content_url": "https://www.daco.pr.gov/recursos/legal/leyes/ ",
+  "specification": "https://docs.google.com/document/d/1A5e0dBuQEo7Gl6xcYGhUwBuNWsVvGOBmejh6WUOIArg/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": "articles_step"
+      },
+
+      "articles_step": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": true,
+        "create_relations": [
+          {
+            "relation_type": "language",
+            "clear_existing_relations": true
+          }
+        ],
+        "reset_counter": {
+          "step": "item_step"
+        },
+
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["div.facetwp-template > div > div"],
+          "split_by_tag": {
+            "tag_name": "h2",
+            "tag_content": "any"
+          },
+          "siblings": [1, null]
+        },
+        "next_step": "item_step"
+      },
+
+      "item_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": true,
+        "context": {
+          "path": ["div.facetwp-template > div > div"]
+        },
+
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.fwpl-item.el-l71x9f.filtering-title"]
+          },
+
+          "title_prefix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.sec_date"]
+          },
+
+          "title_separator": "--",
+          "pdf_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false
+          },
+
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["div.fwpl-item.el-9il8pu.displayinline"]
+          },
+
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": true,
+            "path": ["div.fwpl-item.el-l71x9f.filtering-title > h3 > a"]
+          }
+        },
+        "parent_context": "articles_step",
+        "next_step": ["articles_step"]
+      },
+
+      "details_step": {
+        "description": "getting full text of the doc.",
+        "doc": {
+          "html": {
+            "path": "body"
+          }
+        }
+      }
+    }
+  }
+}
