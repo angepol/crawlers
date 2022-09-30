@@ -1,15 +1,15 @@
 {
-  "spider_name": "unified-us-pr-la-consumer-affars-laws",
+  "spider_name": "unified-us-tx-dob-proposed-rules",
   "api_table": "legal_api_docs",
-  "meta_table": "agency_updates",
-  "jurisdiction": "US-PR",
-  "agency": "[US] Puerto Rico Department of Consumer Affairs - Laws",
-  "agency_id": 59000003,
-  "short_name": "PR-LA",
-  "category": "Act",
-  "base_url": "https://www.daco.pr.gov/",
-  "content_url": "https://www.daco.pr.gov/recursos/legal/leyes/",
-  "specification": "https://docs.google.com/document/d/1A5e0dBuQEo7Gl6xcYGhUwBuNWsVvGOBmejh6WUOIArg/edit",
+  "meta_table": "proposed_rule",
+  "jurisdiction": "US-TX",
+  "agency": "[US] Texas Department of Banking - Proposed Rules",
+  "agency_id": 300001,
+  "short_name": "TX-DOB",
+  "category": "Proposed Rule",
+  "base_url": "https://www.dob.texas.gov/",
+  "content_url": "https://www.dob.texas.gov/laws-regulations/proposed-rules",
+  "specification": "https://docs.google.com/document/d/15KGPdXaPL-xeiyIRP4oBbai2X_G6nlOIh3dYSM45Ntg/edit",
   "configurations": {
     "steps": {
       "start": {
@@ -18,9 +18,10 @@
         "process_related_documents": false,
         "is_parent": false,
         "continue_crawl": false,
-        "next_step": "articles_step"
+        "next_step": ["articles_step"]
       },
       "articles_step": {
+        "debug": true,
         "description": "Getting a list of articles for the current page",
         "save_document": false,
         "process_related_documents": false,
@@ -34,14 +35,14 @@
           "combine_context": false,
           "is_page_source": false,
           "path": [
-            "div.fwpl-layout > div.fwpl-result.el-l5bbb > div.fwpl-row.el-fgtzfa > div.fwpl-col.el-f7crym"
+            "div.layout__region.layout__region--first > div > div > table > tbody > tr"
           ]
         },
         "next_step": ["items_step"]
       },
       "items_step": {
         "description": "Getting metadata of the current article",
-        "save_document": false,
+        "save_document": true,
         "process_related_documents": false,
         "is_parent": false,
         "continue_crawl": false,
@@ -52,7 +53,7 @@
           "is_sibling_tag": false,
           "combine_context": false,
           "is_page_source": false,
-          "path": ["div > h3 > a"]
+          "path": ["td:nth-of-type(1) > a"]
         },
         "doc": {
           "title": {
@@ -67,8 +68,25 @@
             "from_url": false,
             "is_current_url": false,
             "is_text_generated": false,
-            "path": ["div > h3 > a"]
+            "path": ["td:nth-of-type(1)"]
           },
+
+          "title-seperator": "--",
+          "title_suffix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(2)"]
+          },
+
           "web_url": {
             "is_text": false,
             "is_url": true,
@@ -81,49 +99,7 @@
             "from_url": false,
             "is_current_url": false,
             "is_text_generated": false,
-            "path": ["div > h3 > a"]
-          },
-          "pub_date": {
-            "is_text": true,
-            "is_url": false,
-            "is_single": true,
-            "is_sibling_tag": false,
-            "is_sibling_text": false,
-            "is_date": true,
-            "dayfirst": false,
-            "parse_pdf": false,
-            "from_url": false,
-            "is_current_url": false,
-            "is_text_generated": false,
-            "path": ["div > div.fwpl-item.el-9il8pu.displayinline"]
-          },
-          "title_prefix": {
-            "is_text": true,
-            "is_url": false,
-            "is_single": true,
-            "is_sibling_tag": false,
-            "is_sibling_text": false,
-            "is_date": false,
-            "dayfirst": false,
-            "parse_pdf": false,
-            "from_url": false,
-            "is_current_url": false,
-            "is_text_generated": false,
-            "path": ["div > div.sec_date > b > span.fnt_fn "]
-          },
-          "summary_text": {
-            "is_text": true,
-            "is_url": false,
-            "is_single": true,
-            "is_sibling_tag": false,
-            "is_sibling_text": false,
-            "is_date": false,
-            "dayfirst": false,
-            "parse_pdf": false,
-            "from_url": false,
-            "is_current_url": false,
-            "is_text_generated": false,
-            "path": ["div.fwpl-item.el-t5uizk > p"]
+            "path": ["td:nth-of-type(1) > a"]
           },
           "incomplete_pub_date": false
         },
@@ -137,10 +113,9 @@
         "is_parent": false,
         "continue_crawl": false,
         "doc": {
-          "doc_url": {
+          "html": {
             "is_text": false,
-            "is_url": true,
-            "is_single": true,
+            "is_single": false,
             "is_sibling_tag": false,
             "is_sibling_text": false,
             "is_date": false,
@@ -148,12 +123,47 @@
             "parse_pdf": false,
             "from_url": false,
             "is_current_url": false,
-            "is_text_generated": false,
-            "path": ["div.cus_sidebar_button > a"]
+            "path": ["body"]
           },
-          "incomplete_pub_date": false
+          "incomplete_pub_date": true
+        },
+        "next_step": ["get_pub_date_from_pdf"]
+      },
+
+      "get_pub_date_from_html": {
+        "description": "Find pub_date in full text",
+        "save_document": true,
+        "pre_generate_full_text": "html",
+        "doc": {
+          "pub_date": {
+            "is_single": true,
+            "is_text": true,
+            "is_date": true,
+            "path": "",
+            "is_text_generated": true,
+            "regex": ["(?<=Filed:)(.*$)"]
+          }
         }
       }
     }
   }
 }
+
+// I am going to need a way to get the dates possibly using a filter and locations?
+// locations for pub_date?
+
+// swtich over to python language -
+
+// td:nth-of-type(1)
+
+// the pub dates for this document exist in  these P tags.
+
+// body > p:nth-child(14) - becomes
+
+// body > p:nth-child(27) - becomes
+
+// body > p:nth-child(38) - becomes
+
+// body > p:nth-child(49) - becomes
+
+// body > p:nth-child(61) - becomes
