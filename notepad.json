@@ -1,0 +1,64 @@
+Order No. ENF-13-CDO-1721
+
+
+the respondant is in the summary
+In the Matter of Caroline B. Berthelot
+
+
+This is the regex for how I am trying to get the respondnant
+
+
+"respondent": {
+  "is_text": true,
+  "is_single": true,
+  "path": ["div.news-body.news-teaser > div"],
+  "regex": "In the Matter of (.*?):"
+},
+
+
+for example there is no ':'
+
+in this summary text
+In the Matter of Mind Capital AKA Mind Capital OÜ AKA Mind Capital Tech SL; Gonzo Garcia-Pelayo; Oscar Garcia-Pelayo; Rubén Arcas; Manual Arniz; Cristina Kelly Lopez' Alejandro Mejía; and Craig Kintzel
+
+
+A list of titles that are not coming back with the respondants name in the title.
+Why is that.
+
+is it because those summary texts include special characters?
+like & and .
+
+
+In The Matter of PB & Associates, LLC, Barbara Lanesa George aka Barbara Troutman, and Patricia Coleman : Emergency Cease and Desist Order
+
+
+
+
+doc_id
+24205581
+Order No. ENF-21-CDO-1856
+
+doc_id
+24205685
+Order No. ENF-21-CDO-1847
+
+
+below?
+doc_id
+24205736
+Order No. ENF-21-CDO-1844
+
+
+doc_id
+24206134
+Order No. ENF-20-CDO-1824
+
+
+doc_id
+24206364
+Order No. ENF-20-CDO-1817
+
+
+doc_id
+24206364
+Order No. ENF-20-CDO-1817

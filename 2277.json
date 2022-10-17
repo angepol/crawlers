@@ -1,17 +1,15 @@
-// working - without pub_date.
-
 {
-  "spider_name": "unified-us-tx-dob-proposed-rules",
-  "api_table": "legal_api_docs",
+  "spider_name": "unified-can-fcac-decisions",
+  "api_table": "fed_api_docs",
   "meta_table": "proposed_rule",
-  "jurisdiction": "US-TX",
-  "agency": "[US] Texas Department of Banking - Proposed Rules",
-  "agency_id": 300001,
-  "short_name": "TX-DOB",
-  "category": "Proposed Rule",
-  "base_url": "https://www.dob.texas.gov/",
-  "content_url": "https://www.dob.texas.gov/laws-regulations/proposed-rules",
-  "specification": "https://docs.google.com/document/d/15KGPdXaPL-xeiyIRP4oBbai2X_G6nlOIh3dYSM45Ntg/edit",
+  "jurisdiction": "CAN",
+  "agency": "[CAN] Financial Consumer Agency of Canada-Decisions",
+  "agency_id": 14000014,
+  "short_name": "CAN-FCAC",
+  "category": "Enforcement Decision",
+  "base_url": "https://www.canada.ca/",
+  "content_url": "https://www.canada.ca/en/financial-consumer-agency/services/industry/commissioner-decisions.html",
+  "specification": "https://docs.google.com/document/d/1ZHYNjqQzIJps1o5J2U98Edm5hFQYa1AJfjpxCuXTEYI/edit",
   "configurations": {
     "steps": {
       "start": {
@@ -23,7 +21,6 @@
         "next_step": ["articles_step"]
       },
       "articles_step": {
-        "debug": true,
         "description": "Getting a list of articles for the current page",
         "save_document": false,
         "process_related_documents": false,
@@ -36,27 +33,22 @@
           "is_sibling_tag": false,
           "combine_context": false,
           "is_page_source": false,
-          "path": [
-            "div.layout__region.layout__region--first > div > div > table > tbody > tr"
-          ]
+          "path": ["body > main > div:nth-of-type(3)"]
         },
         "next_step": ["items_step"]
       },
       "items_step": {
         "description": "Getting metadata of the current article",
-        "save_document": true,
+        "save_document": false,
         "process_related_documents": false,
         "is_parent": false,
         "continue_crawl": false,
         "context": {
           "is_url": true,
-          "is_text": false,
-          "is_single": false,
-          "is_sibling_tag": false,
-          "combine_context": false,
-          "is_page_source": false,
-          "path": ["td:nth-of-type(1) > a"]
+          "path": ["p > a"],
+          "tag_filter": "[tag for tag in results if 'Decision' in tag.text]"
         },
+
         "doc": {
           "title": {
             "is_text": true,
@@ -70,26 +62,8 @@
             "from_url": false,
             "is_current_url": false,
             "is_text_generated": false,
-            "path": ["td:nth-of-type(1)"]
+            "path": ["a > strong"]
           },
-
-          "title-separator": "--",
-          "title_suffix": {
-            "separator": "",
-            "is_text": true,
-            "is_url": false,
-            "is_single": true,
-            "is_sibling_tag": false,
-            "is_sibling_text": false,
-            "is_date": false,
-            "dayfirst": false,
-            "parse_pdf": false,
-            "from_url": false,
-            "is_current_url": false,
-            "is_text_generated": false,
-            "path": ["td:nth-of-type(2)"]
-          },
-
           "web_url": {
             "is_text": false,
             "is_url": true,
@@ -102,7 +76,69 @@
             "from_url": false,
             "is_current_url": false,
             "is_text_generated": false,
-            "path": ["td:nth-of-type(1) > a"]
+            "path": ["p > a"]
+          },
+          "summary_text": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["body > main > div:nth-child(3) > ul"]
+          },
+          "respondent": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["body > main > div:nth-child(3) > ul"],
+            "group_regex": "alleged that.(.*?)committed",
+            "groups_no": 1,
+            "regex_ignore_case": true
+          },
+          "docket_id": {
+            "is_text": false,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["body > main > div:nth-child(3) > ul"]
+          },
+          "publication_date": {
+            "is_text": false,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["body > main > div:nth-of-type(3) > ul"],
+            "group_regex": "(?<=Posted on).(.*$)",
+            "groups_no": 1,
+            "regex_ignore_case": true
           },
           "incomplete_pub_date": false
         },
@@ -118,6 +154,7 @@
         "doc": {
           "html": {
             "is_text": false,
+            "is_url": false,
             "is_single": false,
             "is_sibling_tag": false,
             "is_sibling_text": false,
@@ -126,49 +163,12 @@
             "parse_pdf": false,
             "from_url": false,
             "is_current_url": false,
-            "path": ["body"]
+            "is_text_generated": false,
+            "path": "body > main > div:nth-of-type(2)"
           },
-          "incomplete_pub_date": true
-        },
-        "next_step": ["get_pub_date_from_pdf"]
-      },
-
-      "get_pub_date_from_html": {
-        "description": "Find pub_date in full text",
-        "save_document": true,
-        "pre_generate_full_text": "html",
-        "doc": {
-          "pub_date": {
-            "is_single": true,
-            "is_text": true,
-            "is_date": true,
-            "path": "",
-            "is_text_generated": true,
-            "regex": ["(?<=Filed:)(.*$)"]
-          }
+          "incomplete_pub_date": false
         }
       }
     }
   }
 }
-
-// I am going to need a way to get the dates possibly using a filter and locations?
-// locations for pub_date?
-
-// swtich over to python language -
-
-// td:nth-of-type(1)
-
-// the pub dates for this document exist in  these P tags.
-
-// body > p:nth-child(14) - becomes
-
-// body > p:nth-child(27) - becomes
-
-// body > p:nth-child(38) - becomes
-
-// body > p:nth-child(49) - becomes
-
-// body > p:nth-child(61) - becomes
-
-// ok create a regex for the date...

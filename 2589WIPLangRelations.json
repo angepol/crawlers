@@ -15,12 +15,67 @@
       "start": {
         "description": "Starting step that loads main web-page.",
         "next_step": [
+          "create_language_relationship",
           "create_new_tab",
           "switch_main_to_window",
           "articles_step",
           ">> next_page"
         ]
       },
+
+      "create_language_relationship": {
+        "description": "Creates a language relationship between the first and second articles.",
+        "save_document": false,
+        "process_relates_documents": true,
+        "create_relations": [
+          {
+            "relation_type": "language",
+            "clear_existing_relations": true
+          }
+        ],
+
+        "reset_counter": {
+          "step": "get_eng_doc_tag",
+          "description": "resets step"
+        },
+
+        "context": {
+          "path": ".fwpl-layout"
+        },
+        "siblings": [1, null],
+
+        "next_step": ["get_eng_doc_tag", "get_span_doc_tag"]
+      },
+
+      "get_eng_doc_tag": {
+        "description": "Getting eng doc tag",
+        "doc": {
+          "index": "use_step_counter",
+          "language": "English"
+        },
+        "context": {
+          "path": ".fwpl-layout > div:nth-of-type(1)"
+        },
+        "next_step": "items_step"
+      },
+
+      "reset_counter": {
+        "step": "get_span_doc_tag",
+        "description": "resets step"
+      },
+
+      "get_span_doc_tag": {
+        "description": "Getting spanish doc tag",
+        "doc": {
+          "index": "use_step_counter",
+          "language": "Spanish"
+        },
+        "context": {
+          "path": ".fwpl-layout > div:nth-of-type(2)"
+        },
+        "next_step": "items_step"
+      },
+
       "create_new_tab": {
         "description": "Creating new tab",
         "save_document": false,
@@ -108,7 +163,7 @@
             "from_url": false,
             "is_current_url": false,
             "is_text_generated": false,
-            "path": ["div > h3 > a"]
+            "path": ["div > h3"]
           },
           "web_url": {
             "is_text": false,
@@ -171,6 +226,7 @@
         },
         "next_step": ["details_step"]
       },
+
       "details_step": {
         "description": "Getting full_text of the doc",
         "doc": {

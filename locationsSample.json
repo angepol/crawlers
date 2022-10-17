@@ -1,0 +1,99 @@
+{
+  "spider_name": "unified-eu-parl-press-releases",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "EU",
+  "agency": "European Parliament- Press Room",
+  "agency_id": 33100002,
+  "short_name": "EU-PARL",
+  "category": "Press Release",
+  "base_url": "https://www.europarl.europa.eu/",
+  "content_url": "https://www.europarl.europa.eu/news/en/press-room",
+  "specification": "https://docs.google.com/document/d/1oxWo2FLra6JZRmgDwztCwQxCPXpcDJlV7T82IMjBdP8/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "articles step",
+        "context": {
+          "path": [
+            "main#website-body > div.ep_gridrow > div.ep_gridrow-content > div.ep_gridcolumn > div.ep_gridrow.ep-o_productlist > div.ep_gridrow-content > article.ep_gridcolumn.ep-m_product.ep-layout_linkmode > div"
+          ]
+        },
+        "next_step": ["item_step"]
+      },
+      "item_step": {
+        "description": "item step",
+        "save_document": false,
+        "process_related_documents": true,
+        "context": {
+          "is_url": true,
+          "path": ["a"]
+        },
+        "doc": {
+          "web_url": {
+            "is_url": true,
+            "path": "a"
+          },
+          "summary_text": {
+            "is_text": true,
+            "is_single": true,
+            "path": ["p"]
+          },
+          "incomplete_pub_date": true
+        },
+        "next_step": ["details_step"],
+        "parent_context": "articles_step"
+      },
+      "details_step": {
+        "description": "details page",
+        "save_document": true,
+        "doc": {
+          "language": "English",
+          "title": {
+            "is_text": true,
+            "path": [
+              "div.ep_gridcolumn.ep-m_header > div > div > h1 > div > span.ep_name"
+            ]
+          },
+          "title_english": {
+            "is_text": true,
+            "is_single": true,
+            "path": [
+              "div.ep_gridcolumn.ep-m_header > div > div > h1 > div > span.ep_name"
+            ]
+          },
+          "pdf_url": {
+            "is_url": true,
+            "is_single": true,
+            "path": [
+              "div.ep_links > div.ep-p_text.ep-layout_pdf > a > span.ep_name"
+            ],
+            "tag_filter": "[tag.parent for tag in results]"
+          },
+          "pub_date": {
+            "parse_pdf": true,
+            "locations": [
+              {
+                "coordinates": {
+                  "top": "1",
+                  "bottom": "0.8",
+                  "left": "0",
+                  "right": "1"
+                },
+                "pages": "first"
+              }
+            ],
+            "regex": ["\\d{1,2}-\\d{1,2}-20\\d{2}"],
+            "is_date": true,
+            "dayfirst": true
+          },
+          "incomplete_pub_date": true
+        }
+      }
+    }
+  }
+}

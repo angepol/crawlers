@@ -1,0 +1,501 @@
+// current config that workds but does not seperate HTML
+
+// {
+//   "spider_name": "unified-us-tx-dob-proposed-rules",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "proposed_rule",
+//   "jurisdiction": "US-TX",
+//   "agency": "[US] Texas Department of Banking - Proposed Rules",
+//   "agency_id": 300001,
+//   "short_name": "TX-DOB",
+//   "category": "Proposed Rule",
+//   "base_url": "https://www.dob.texas.gov/",
+//   "content_url": "https://www.dob.texas.gov/laws-regulations/proposed-rules",
+//   "specification": "https://docs.google.com/document/d/15KGPdXaPL-xeiyIRP4oBbai2X_G6nlOIh3dYSM45Ntg/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": [
+//           "articles_step"
+//         ]
+//       },
+//       "articles_step": {
+//         "debug": true,
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.layout__region.layout__region--first > div > div > table > tbody > tr"
+//           ]
+//         },
+//         "next_step": [
+//           "items_step"
+//         ]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": true,
+//         "process_related_documents": true,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "td:nth-of-type(1) > a",
+//             "td:nth-of-type(1) > p > a"
+//           ]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "td:nth-of-type(1)"
+//             ]
+//           },
+//           "title_separator": "--",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "td:nth-of-type(2)"
+//             ]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "td:nth-of-type(1) > a",
+//               "td:nth-of-type(1) > p > a"
+//             ]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": [
+//           "details_step"
+//         ],
+//         "parent_context": "articles_step"
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the doc",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "html": {
+//             "is_text": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": [
+//               "body"
+//             ]
+//           },
+//           "pub_date": {
+//             "parse_pdf": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0.8",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "first",
+//                 "text_before": {
+//                   "text": "Filed:",
+//                   "ignore_case": true
+//                 }
+//               }
+//             ],
+//             "is_date": true
+//           },
+//           "incomplete_pub_date": false
+//         }
+//       }
+//     }
+//   }
+// }
+
+//
+
+// experimentation splitting by hr tag
+
+// {
+//   "spider_name": "unified-us-tx-dob-proposed-rules",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "proposed_rule",
+//   "jurisdiction": "US-TX",
+//   "agency": "[US] Texas Department of Banking - Proposed Rules",
+//   "agency_id": 300001,
+//   "short_name": "TX-DOB",
+//   "category": "Proposed Rule",
+//   "base_url": "https://www.dob.texas.gov/",
+//   "content_url": "https://www.dob.texas.gov/laws-regulations/proposed-rules",
+//   "specification": "https://docs.google.com/document/d/15KGPdXaPL-xeiyIRP4oBbai2X_G6nlOIh3dYSM45Ntg/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.layout__region.layout__region--first > div > div > table > tbody > tr"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": true,
+//         "process_related_documents": true,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["td:nth-of-type(1) > a", "td:nth-of-type(1) > p > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["td:nth-of-type(1)"]
+//           },
+//           "title_separator": "--",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["td:nth-of-type(2)"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["td:nth-of-type(1) > a", "td:nth-of-type(1) > p > a"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": ["details_step"],
+//         "parent_context": "articles_step"
+//       },
+//       "details_step": {
+//         "description": "splits the document into sections",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body"]
+//         },
+//         "split_by_path": {
+//           "path": "body > hr"
+//         },
+//         "doc": {
+//           "html": {
+//             "is_text": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["body"]
+//           },
+//           "pub_date": {
+//             "parse_pdf": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0.8",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "first",
+//                 "text_before": {
+//                   "text": "Filed:",
+//                   "ignore_case": true
+//                 }
+//               }
+//             ],
+//             "is_date": true
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": "articles_step"
+//       }
+//     }
+//   }
+// }
+
+// splitting by hr tag to get different documents. Will remove locations and pdf: true for pub date - perhaps use generate full text instead.
+
+{
+  "spider_name": "unified-us-tx-dob-proposed-rules",
+  "api_table": "legal_api_docs",
+  "meta_table": "proposed_rule",
+  "jurisdiction": "US-TX",
+  "agency": "[US] Texas Department of Banking - Proposed Rules",
+  "agency_id": 300001,
+  "short_name": "TX-DOB",
+  "category": "Proposed Rule",
+  "base_url": "https://www.dob.texas.gov/",
+  "content_url": "https://www.dob.texas.gov/laws-regulations/proposed-rules",
+  "specification": "https://docs.google.com/document/d/15KGPdXaPL-xeiyIRP4oBbai2X_G6nlOIh3dYSM45Ntg/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.layout__region.layout__region--first > div > div > table > tbody > tr"
+          ]
+        },
+        "next_step": ["items_step"]
+      },
+      "items_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": true,
+        "process_related_documents": true,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["td:nth-of-type(1) > a", "td:nth-of-type(1) > p > a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(1)"]
+          },
+          "title_separator": "--",
+          "title_suffix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(2)"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(1) > a", "td:nth-of-type(1) > p > a"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["details_step"],
+        "parent_context": "articles_step"
+      },
+
+      "details_step": {
+        "description": "splits the document into sections",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["body"]
+        },
+        "split_by_path": {
+          "path": "body > hr"
+        },
+
+        "doc": {
+          "html": {
+            "is_text": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "path": ["body"]
+          }
+        },
+        "next_step": "get_pub_date_from_html"
+      },
+
+      "get_pub_date_from_html": {
+        "description": "Find pub_date in related section of html",
+        "save_document": true,
+        "pre_generate_full_text": "html",
+        "doc": {
+          "pub_date": {
+            "is_single": true,
+            "is_text": true,
+            "is_date": true,
+            "path": "",
+            "is_text_generated": true,
+            "regex": ["(?<=Filed:)(.*$)"]
+          }
+        },
+        "incomplete_pub_date": false
+      }
+    }
+  }
+}
