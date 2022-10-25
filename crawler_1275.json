@@ -1,0 +1,43 @@
+{
+  "spider_name": "unified-ind-tec-downloads",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "IND",
+  "agency": "IND-TEC",
+  "agency_id": 250000008,
+  "short_name": "IND-TEC",
+  "category": "Guidance",
+  "base_url": "https://www.mtcte.tec.gov.in/",
+  "content_url": "https://www.mtcte.tec.gov.in/downloads?section=0",
+  "specification": "https://docs.google.com/document/d/1UsERomQVpQManz1cJROPESHdPWmhUjmwYx83l6MInBc/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "get_articles",
+        "context": {
+          "is_url": false,
+          "path": "html > body > div#page > div.content-wrapper.col-sm-8.mx-auto.homepage1 > div.container-fluid > div#demo0 > div.card-body.main-content-body > div"
+        },
+        "next_step": ["item_step"]
+      },
+      "item_step": {
+        "description": "get_items",
+        "doc": {
+          "title": {
+            "path": "a > strong"
+          },
+          "pdf_url": {
+            "path": "a"
+          }
+        },
+        "parent_context": "articles_step"
+      }
+    }
+  }
+}
+
+// https://www.mtcte.tec.gov.in/downloads

@@ -1,0 +1,414 @@
+{
+  "spider_name": "unified-us-tx-dob-proposed-rules",
+  "api_table": "legal_api_docs",
+  "meta_table": "proposed_rule",
+  "jurisdiction": "US-TX",
+  "agency": "[US] Texas Department of Banking - Proposed Rules",
+  "agency_id": 300001,
+  "short_name": "TX-DOB",
+  "category": "Proposed Rule",
+  "base_url": "https://www.dob.texas.gov/",
+  "content_url": "https://www.dob.texas.gov/laws-regulations/proposed-rules",
+  "specification": "https://docs.google.com/document/d/15KGPdXaPL-xeiyIRP4oBbai2X_G6nlOIh3dYSM45Ntg/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": [
+          "articles_step_1",
+          "articles_step_2",
+          "articles_step_3",
+          "articles_step_4"
+        ]
+      },
+      "articles_step_1": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.layout__region.layout__region--first > div > div > table > tbody > tr:nth-of-type(1)"
+          ]
+        },
+        "next_step": ["items_step_1"]
+      },
+      "articles_step_2": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.layout__region.layout__region--first > div > div > table > tbody > tr:nth-of-type(2)"
+          ]
+        },
+        "next_step": ["items_step_2"]
+      },
+      "articles_step_3": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.layout__region.layout__region--first > div > div > table > tbody > tr:nth-of-type(3)"
+          ]
+        },
+        "next_step": ["items_step_3"]
+      },
+      "articles_step_4": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.layout__region.layout__region--first > div > div > table > tbody > tr:nth-of-type(4)"
+          ]
+        },
+        "next_step": ["items_step_4"]
+      },
+      "items_step_1": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": true,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(1)"]
+          },
+          "title_separator": "--",
+          "title_suffix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(2)"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["split_page_step_1"]
+      },
+      "items_step_2": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": true,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(1)"]
+          },
+          "title_separator": "--",
+          "title_suffix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(2)"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["split_page_step_2"]
+      },
+      "items_step_3": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": true,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(1)"]
+          },
+          "title_separator": "--",
+          "title_suffix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(2)"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["split_page_step_3"]
+      },
+      "items_step_4": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": true,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(1)"]
+          },
+          "title_separator": "--",
+          "title_suffix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td:nth-of-type(2)"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["split_page_step_4"]
+      },
+      "split_page_step_1": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "path": ["body"],
+          "split_by_path": {
+            "path": "hr"
+          },
+          "code_filter": "results[0] if results else []"
+        },
+        "next_step": ["details_step"]
+      },
+      "split_page_step_2": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "path": ["body"],
+          "split_by_path": {
+            "path": "hr"
+          },
+          "code_filter": "results[1] if results else []"
+        },
+        "next_step": ["details_step"]
+      },
+      "split_page_step_3": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "path": ["body"],
+          "split_by_path": {
+            "path": "hr"
+          },
+          "code_filter": "results[2] if results else []"
+        },
+        "next_step": ["details_step"]
+      },
+      "split_page_step_4": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "context": {
+          "path": ["body"],
+          "split_by_path": {
+            "path": "hr"
+          },
+          "code_filter": "results[3] if results else []"
+        },
+        "next_step": ["details_step"]
+      },
+      "details_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": true,
+        "doc": {
+          "html": {
+            "path": "body"
+          },
+          "pub_date": {
+            "is_single": true,
+            "is_date": true,
+            "is_text": true,
+            "path": "body",
+            "regex": "Filed: (\\w+ \\d{1,2}, 20\\d{2})"
+          },
+          "counter": {
+            "path": "body",
+            "code_filter": "kwargs['doc']['counter'] + 1"
+          }
+        }
+      }
+    }
+  }
+}

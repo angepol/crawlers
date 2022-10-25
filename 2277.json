@@ -139,8 +139,7 @@
             "group_regex": "(?<=Posted on).(.*$)",
             "groups_no": 1,
             "regex_ignore_case": true
-          },
-          "incomplete_pub_date": false
+          }
         },
         "next_step": ["details_step"],
         "parent_context": "articles_step"

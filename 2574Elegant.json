@@ -26,6 +26,7 @@
         "process_related_documents": false,
         "is_parent": false,
         "continue_crawl": false,
+        "debug": true,
         "context": {
           "is_url": false,
           "is_text": false,
@@ -35,24 +36,26 @@
           "is_page_source": false,
           "path": [
             "div.layout__region.layout__region--first > div > div > table > tbody > tr"
-          ]
+          ],
+          "siblings": [1, null]
+        },
+        "doc": {
+          "counter": 0
         },
         "next_step": ["items_step"]
       },
       "items_step": {
         "description": "Getting metadata of the current article",
-        "save_document": true,
-        "process_related_documents": true,
-        "is_parent": false,
-        "continue_crawl": false,
+        "save_document": false,
+        "debug": true,
         "context": {
           "is_url": true,
           "is_text": false,
-          "is_single": false,
+          "is_single": true,
           "is_sibling_tag": false,
           "combine_context": false,
           "is_page_source": false,
-          "path": ["td:nth-of-type(1) > a", "td:nth-of-type(1) > p > a"]
+          "path": ["a"]
         },
         "doc": {
           "title": {
@@ -96,75 +99,44 @@
             "from_url": false,
             "is_current_url": false,
             "is_text_generated": false,
-            "path": ["td:nth-of-type(1) > a", "td:nth-of-type(1) > p > a"]
+            "path": ["a"]
           },
           "incomplete_pub_date": false
         },
-        "next_step": ["details_step"],
-        "parent_context": "articles_step"
+        "next_step": ["split_page_step"]
       },
-      "details_step": {
-        "description": "splits the document into sections",
-        "save_document": true,
-        "process_related_documents": false,
-        "is_parent": false,
-        "continue_crawl": false,
-        "context": {
-          "is_url": false,
-          "is_text": false,
-          "is_single": false,
-          "is_sibling_tag": false,
-          "combine_context": false,
-          "is_page_source": false,
-          "path": ["body"]
-        },
-
-        "doc": {
-          "html": {
-            "is_text": false,
-            "is_single": false,
-            "is_sibling_tag": false,
-            "is_sibling_text": false,
-            "is_date": false,
-            "dayfirst": false,
-            "parse_pdf": false,
-            "from_url": false,
-            "is_current_url": false,
-            "path": ["body"]
-          }
-        },
-        "next_step": "split_page"
-      },
-
-      "split_page": {
-        "description": "split the page into sections.",
+      "split_page_step": {
+        "description": "Getting metadata of the current article",
         "save_document": false,
         "context": {
-          "path": "body",
+          "path": ["body"],
           "split_by_path": {
-            "path": "body > hr"
+            "path": "hr"
           },
-          "siblings": [1, 2, 3, 4, 5]
+          "code_filter": "results[kwargs['doc']['counter']] if results else []"
         },
-        "next_step": ["get_pub_date_from_html"]
-      }
-    },
-
-    "get_pub_date_from_html": {
-      "description": "Find pub_date in related section of html",
-      "save_document": true,
-      "pre_generate_full_text": "html",
-      "doc": {
-        "pub_date": {
-          "is_single": true,
-          "is_text": true,
-          "is_date": true,
-          "path": "",
-          "is_text_generated": true,
-          "regex": ["(?<=Filed:)(.*$)"]
-        }
+        "next_step": ["details_step"]
       },
-      "incomplete_pub_date": false
+      "details_step": {
+        "description": "Gettng full text and pub date of each document",
+        "save_document": true,
+        "doc": {
+          "html": {
+            "path": "body"
+          },
+          "pub_date": {
+            "is_single": true,
+            "is_date": true,
+            "is_text": true,
+            "path": "body",
+            "regex": "Filed: (\\w+ \\d{1,2}, 20\\d{2})"
+          },
+          "counter": {
+            "path": "body",
+            "code_filter": "kwargs['doc']['counter'] + 1"
+          }
+        }
+      }
     }
   }
 }
