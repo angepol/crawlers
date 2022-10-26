@@ -118,7 +118,7 @@
         "next_step": ["details_step"]
       },
       "details_step": {
-        "description": "Gettng full text and pub date of each document",
+        "description": "Getting full text and pub date of each document",
         "save_document": true,
         "doc": {
           "html": {
