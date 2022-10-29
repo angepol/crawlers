@@ -1,0 +1,388 @@
+{
+  "spider_name": "unified-esp-bs-press-releases",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "ESP",
+  "agency": "Bank of Spain - Press Releases",
+  "agency_id": 43000001,
+  "short_name": "ESP-BDE",
+  "category": "Press Release",
+  "base_url": "https://www.bde.es/",
+  "content_url": "https://www.bde.es/bde/es/secciones/prensa/notas/Notas_Informativ/index202200.html",
+  "specification": "https://docs.google.com/document/d/1sU0GvKhCq6AXVjmN9uFkvOhEQ-iiWyzMFQlbFuQSB6s/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["article_step"]
+      },
+      "article_step": {
+        "description": "Getting the articles from the page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["ul.listados > li.share-doc"],
+          "extract_tags": {
+            "path": "div.sharedoc"
+          }
+        },
+        "next_step": ["if_edge_step", "if_not_edge_step"]
+      },
+      "if_not_edge_step": {
+        "description": "If the condition is not an edge case",
+        "save_document": false,
+        "process_related_documents": true,
+        "create_relations": [
+          {
+            "relation_type": "language",
+            "clear_existing_relations": true
+          }
+        ],
+        "reset_counter": {
+          "step": ["item_step"]
+        },
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["body"],
+          "code_filter": "[tag for tag in results if not tag.select_one('span.textoPadre')]"
+        },
+        "next_step": ["item_step"]
+      },
+      "if_edge_step": {
+        "description": "If the condition is an edge case",
+        "save_document": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["body"],
+          "code_filter": "[tag for tag in results if tag.select_one('span.textoPadre')]"
+        },
+        "next_step": ["edge_item_step"]
+      },
+      "item_step": {
+        "description": "Getting the metadata from the page",
+        "save_document": true,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "path": ["body"]
+        },
+        "doc": {
+          "index": "use_step_counter",
+          "language": "Spanish",
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"],
+            "code_filter": "[s.rsplit('(', 1)[0] for s in results]"
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": true,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["span.cite > span"]
+          },
+          "web_url": {
+            "is_current_url": true,
+            "path": ["body"]
+          },
+          "pdf_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "english_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "path": ["a"],
+            "code_filter": "[s.replace('.pdf', 'en.pdf') for s in results]"
+          },
+          "category": "Press Release",
+          "title_suffix": null,
+          "title_separator": "--",
+          "incomplete_pub_date": true
+        },
+        "next_step": ["load_web_page_for_English_doc"]
+      },
+      "load_web_page_for_English_doc": {
+        "description": "Loading webpage for english documents",
+        "url": "https://www.bde.es/bde/en/secciones/prensa/notas/Notas_Informativ/index202200.html",
+        "next_step": ["get_english_article_step"]
+      },
+      "get_english_article_step": {
+        "description": "Getting the metadata from the page",
+        "save_document": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["ul.listados > li.share-doc"],
+          "extract_tags": {
+            "path": "div.sharedoc"
+          },
+          "tag_filter": "[tag for tag in results if tag.select_one('a') and tag.select_one('a').attrs['href'] in kwargs['doc']['english_url']]"
+        },
+        "next_step": ["english_item_step"]
+      },
+      "english_item_step": {
+        "description": "Getting the metadata from the page",
+        "save_document": true,
+        "doc": {
+          "language": "English",
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"],
+            "code_filter": "[s.rsplit('(', 1)[0] for s in results]"
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": true,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["span.cite > span"]
+          },
+          "web_url": {
+            "is_current_url": true,
+            "path": ["body"]
+          },
+          "pdf_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "category": "Press Release",
+          "title_suffix": null,
+          "title_separator": "--",
+          "incomplete_pub_date": true
+        }
+      },
+      "edge_item_step": {
+        "description": "Edge step getting the title and pub date",
+        "save_document": false,
+        "process_related_documents": true,
+        "create_relations": [
+          {
+            "relation_type": "language",
+            "clear_existing_relations": true
+          }
+        ],
+        "reset_counter": {
+          "step": ["edge_detail_step"]
+        },
+        "context": {
+          "path": "ul > li"
+        },
+        "doc": {
+          "title": {
+            "is_single": true,
+            "is_url": false,
+            "is_text": true,
+            "path": "span.textoPadre"
+          },
+          "pub_date": {
+            "is_single": true,
+            "is_url": false,
+            "is_text": true,
+            "is_date": true,
+            "dayfirst": true,
+            "path": "span.cite"
+          }
+        },
+        "next_step": ["edge_detail_step"]
+      },
+      "edge_detail_step": {
+        "description": "Edge step getting the title and pub date",
+        "save_document": true,
+        "context": {
+          "path": "body"
+        },
+        "doc": {
+          "index": "use_step_counter",
+          "language": "Spanish",
+          "pdf_url": {
+            "is_single": true,
+            "is_url": true,
+            "is_text": false,
+            "path": "a"
+          },
+          "title_suffix": {
+            "is_single": true,
+            "is_url": false,
+            "is_text": true,
+            "path": "a",
+            "code_filter": "[s.rsplit('(', 1)[0] for s in results]"
+          },
+          "scraped_category": {
+            "is_single": true,
+            "is_url": false,
+            "is_text": true,
+            "path": "a",
+            "code_filter": "[s.rsplit('(', 1)[0] for s in results]"
+          },
+          "category": "conversion",
+          "english_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "path": ["a"],
+            "code_filter": "[s.replace('ES_Codigo-Global-FX2021', 'EN_FX-Global-Code-2021').replace('ES_Declaracion-de-compromiso', 'EN_Statement-of-Commitment') if 'Nota de prensa' not in kwargs['doc']['scraped_category'] else s.replace('.pdf', 'en.pdf') for s in results]"
+          },
+          "web_url": {
+            "is_current_url": true,
+            "path": "body"
+          },
+          "title_separator": "--"
+        },
+        "next_step": ["load_web_page_for_edge_english_doc"]
+      },
+      "load_web_page_for_edge_english_doc": {
+        "description": "Loading webpage for english documents",
+        "url": "https://www.bde.es/bde/en/secciones/prensa/notas/Notas_Informativ/index202200.html",
+        "next_step": ["edge_get_english_article_step"]
+      },
+      "edge_get_english_article_step": {
+        "description": "Getting english documents for edge step",
+        "save_document": false,
+        "context": {
+          "path": ["ul.listados > li.share-doc"],
+          "extract_tags": {
+            "path": "div.sharedoc"
+          },
+          "code_filter": "[tag for tag in results if tag.select_one('span.textoPadre')]"
+        },
+        "next_step": ["edge_filter_english_step"]
+      },
+      "edge_filter_english_step": {
+        "description": "Filtering out the document for english",
+        "save_document": false,
+        "context": {
+          "path": ["a"],
+          "tag_filter": "[tag for tag in results if tag.attrs['href'] and tag.attrs['href'] in kwargs['doc']['english_url']]"
+        },
+        "next_step": ["edge_get_english_doc"]
+      },
+      "edge_get_english_doc": {
+        "description": "Filtering out the document for english",
+        "save_document": true,
+        "doc": {
+          "language": "English",
+          "pdf_url": {
+            "is_single": true,
+            "is_text": false,
+            "is_url": true,
+            "path": "a"
+          },
+          "title_suffix": {
+            "is_single": true,
+            "is_url": false,
+            "is_text": true,
+            "path": "a",
+            "code_filter": "[s.rsplit('(', 1)[0] for s in results]"
+          },
+          "scraped_category": {
+            "is_single": true,
+            "is_url": false,
+            "is_text": true,
+            "path": "a",
+            "code_filter": "[s.rsplit('(', 1)[0] for s in results]"
+          },
+          "web_url": {
+            "is_current_url": true,
+            "path": "body"
+          },
+          "category": "conversion",
+          "title_separator": "--"
+        }
+      }
+    },
+    "category_conversion": [
+      {
+        "default_category": "Press Release",
+        "category_approach": "containing",
+        "conversion_map": {
+          "Statement of Commitment to FX Global Code": "Statement",
+          "Declaración de Compromiso con el Código Global del Mercado de Divisas": "Statement",
+          "FX Global Code": "Publication",
+          "Código Global del Mercado de Divisas": "Publication"
+        }
+      }
+    ]
+  }
+}
