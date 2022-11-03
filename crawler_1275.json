@@ -8,7 +8,7 @@
   "short_name": "IND-TEC",
   "category": "Guidance",
   "base_url": "https://www.mtcte.tec.gov.in/",
-  "content_url": "https://www.mtcte.tec.gov.in/downloads?section=0",
+  "content_url": "https://www.mtcte.tec.gov.in/downloads",
   "specification": "https://docs.google.com/document/d/1UsERomQVpQManz1cJROPESHdPWmhUjmwYx83l6MInBc/edit",
   "configurations": {
     "steps": {
@@ -40,4 +40,4 @@
   }
 }
 
-// https://www.mtcte.tec.gov.in/downloads
+https://www.mtcte.tec.gov.in/downloads

@@ -1,0 +1,558 @@
+// the crawler currently gets back pub_dates, titles, web_urls for all articles
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "articles_step",
+//         "next_step": ["details_step"]
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the doc",
+//         "save_document": true,
+//         "doc": {
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// next step - filter pub dates and extract tags
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "articles_step",
+//         "next_step": ["details_step"]
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the doc",
+//         "save_document": true,
+//         "doc": {
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// Begin Implementing parent child relationships
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["news_full_text_step"]
+//       },
+//       "news_full_text_step": {
+//         "description": "Constructing full text of parent document and getting list of child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "pdf_url": null
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text of child documents.",
+//         "doc": {
+//           "html": null,
+//           "title": {
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "category": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     }
+//   }
+// }
+
+//  WIP - language relationships - with prefix to title and pdf_url for child document.
+
+{
+  "spider_name": "unified-us-mt-dbfi-news",
+  "api_table": "fed_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-MT",
+  "agency": "Montana Division Banking and Financial Institutions - News ",
+  "agency_id": 3100001,
+  "short_name": "MT-DBFI",
+  "category": "News",
+  "base_url": "https://banking.mt.gov",
+  "content_url": "https://banking.mt.gov/Home/newsmenu",
+  "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+  "starting_date": "01/01/2020",
+  "is_check_all": true,
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["news_articles_step"]
+      },
+      "news_articles_step": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": true,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+          ]
+        },
+        "next_step": ["items_step"]
+      },
+      "items_step": {
+        "description": "Getting metadata of the current article",
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "path": ["h5 > a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["h5 > a"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["h5 > a"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["small > span.date"],
+            "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+          },
+          "summary_text": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "path": ["p.summary"]
+          },
+          "incomplete_pub_date": false
+        },
+        "parent_context": "news_articles_step",
+        "next_step": ["news_full_text_step"]
+      },
+      "news_full_text_step": {
+        "description": "Constructing full text of parent document and getting list of child documents",
+        "is_parent": true,
+        "doc": {
+          "title": {
+            "path": "#content-wrapper > main > h1"
+          },
+          "pub_date": {
+            "path": "#content-wrapper > main > ul > li"
+          },
+          "html": {
+            "path": ["#content-wrapper > main"]
+          },
+          "web_url": {
+            "path": "body",
+            "is_current_url": true
+          },
+          "pdf_url": {
+            "is_url": true,
+            "path": "#content-wrapper > main > p > a",
+            "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+          },
+          "title_prefix": {
+            "is_text": true,
+            "path": "#content-wrapper > main > p > a",
+            "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+          }
+        },
+        "context": {
+          "path": "#content-wrapper > main > p > a",
+          "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+        },
+        "next_step": "child_items_step"
+      },
+      "child_items_step": {
+        "description": "Getting full text of child documents.",
+        "doc": {
+          "html": null,
+          "title": {
+            "path": "a"
+          },
+          "pdf_url": {
+            "path": "a"
+          },
+          "category": {
+            "path": "a"
+          },
+          "incomplete_pub_date": true
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,150 @@
+{
+  "spider_name": "unified-us-ny-dcwp-press-releases",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-NY",
+  "agency": "New York City Department of Consumer Affairs",
+  "agency_id": 400015,
+  "short_name": "NY-DCWP",
+  "category": "Press Release",
+  "base_url": "https://www1.nyc.gov/site/dca/index.page",
+  "content_url": "https://www1.nyc.gov/site/dca/media/news.page",
+  "specification": "https://docs.google.com/document/d/1pTV5tw9Uw5s4j8cRCWSETyF5pHOc4jZq1bq4tujbM8E/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "To load the list of articles",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["div.span6.about-description > p"]
+        },
+        "next_step": ["item_step"]
+      },
+      "item_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["a:nth-of-type(1)"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["p"]
+          },
+          "summary": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": "div > div > div.span9.about-main-image > div > p",
+            "extract_tags": {
+              "path": ["a:nth-of-type(1)", "p"]
+            }
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["details_step"],
+        "parent_context": "articles_step"
+      },
+      "details_step": {
+        "description": "Getting full_text of the current article",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "html": {
+            "is_text": false,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div.span9.about-main-image > div"],
+            "extract_tags": {
+              "path": ["div.span6 > img"]
+            }
+          },
+          "incomplete_pub_date": false
+        },
+        "parent_context": "item_step"
+      }
+    }
+  }
+}
