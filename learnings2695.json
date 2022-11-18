@@ -1,0 +1,262 @@
+{
+  "spider_name": "unified-us-mt-dbfi-news",
+  "api_table": "fed_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-MT",
+  "agency": "Montana Division Banking and Financial Institutions - News",
+  "agency_id": 3100001,
+  "short_name": "MT-DBFI",
+  "category": "News",
+  "base_url": "https://banking.mt.gov",
+  "content_url": "https://banking.mt.gov/Home/newsmenu",
+  "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+  "starting_date": "01/01/2020",
+  "is_check_all": true,
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["click_actions_load_more", "news_articles_step"]
+      },
+
+      "click_actions_load_more": {
+        "description": "click to load more articles",
+        "save_document": false,
+        "actions": [
+          {
+            "path": "//*[@id='content-wrapper']/main/div/div/button",
+            "type": "click",
+            "load_criteria": {
+              "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+              "timeout": 120
+            }
+          }
+        ],
+        "next_step": "news_articles_step"
+      },
+      "news_articles_step": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": true,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+          ]
+        },
+        "next_step": ["items_step"]
+      },
+      "items_step": {
+        "description": "Getting metadata of the current article",
+        "process_related_documents": false,
+        "save_document": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "path": ["h5 > a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["h5 > a"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["h5 > a"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["small > span.date"],
+            "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+          },
+          "pub_date_src": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["small > span.date"],
+            "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+          },
+          // here I have created a viariable called pub_date_src it has the same path as pub_date we use this so we can variablize it without affecting the pub date on the source.
+
+          "summary_text": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "path": ["p.summary"]
+          },
+          "incomplete_pub_date": true
+
+          // if you keep incomplete pub date true - that allows the documents to ingest without needing a pub date. If it was set to false and the crawler atttempted to ingest a doc without a pub date - then the crawler would fail
+        },
+        "next_step": ["parent_doc_step"]
+      },
+      "parent_doc_step": {
+        "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+        "save_document": true,
+        "is_parent": true,
+        "doc": {
+          "title_prefix": null,
+          "title": {
+            "path": "#content-wrapper > main > h1"
+          },
+          //  we had to explicitly say title_prefix null
+
+          "html": {
+            "path": ["#content-wrapper > main"]
+          },
+          "web_url": {
+            "path": "body",
+            "is_current_url": true
+          },
+          "category": "News",
+          "pdf_url": null
+        },
+
+        //  there was a mistake where the parent docs were being set to the pdf because we had two kind of docs being ingested in the same step. Then we set pdf to null and now the parent doc is the html above.
+        //  here we have explicitly set the category to false
+        "context": {
+          "path": "#content-wrapper > main > p > a",
+          "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+        },
+
+        // this code filter takes the results from the path and only selects the ones that are pdf
+        "next_step": "child_items_step"
+      },
+      "child_items_step": {
+        "description": "Getting full text and publication date of child documents.",
+        "save_document": true,
+        "pre_generate_full_text": "pdf_url",
+        "doc": {
+          "category": "conversion",
+          "title_separator": "--",
+          "title_prefix": {
+            "path": "a"
+          },
+
+          // here we specify a conversion map - category conversion
+
+          "html": null,
+          "scraped_category": {
+            "is_single": true,
+            "is_text": true,
+            "path": "a"
+          },
+          "pdf_url": {
+            "path": "a"
+          },
+          //  here we have made another variable for the pub date and called it 'location_pub_date'. We had to set is date to false due to the formatting of the date that is on the pdf
+          "location_pub_date": {
+            "is_date": false,
+            "parse_pdf": true,
+            "is_single": true,
+            "is_text": true,
+            "locations": [
+              {
+                "coordinates": {
+                  "top": "1",
+                  "bottom": "0",
+                  "left": "0",
+                  "right": "1"
+                },
+                "text_before": {
+                  "text": "date:",
+                  "ignore_case": true
+                },
+                "pages": "first",
+                "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+              },
+              // above is the coordinates and regex to look for the date if it's on the first page
+              {
+                "coordinates": {
+                  "top": "1",
+                  "bottom": "0",
+                  "left": "0",
+                  "right": "1"
+                },
+                "pages": "last",
+                "regex": "\\d{1,2}[tndshr]*[day of]*(?:January|February|March|April|May|June|July|August|September|October|November|December)[, ]*\\d{4}"
+              }
+              // here are the coordinates and regex to look for if the date is on the second page. we needed to make this code filter as the 'th day of' was preventing the crawler from being able to read this as a date. so we made a code filter to take out theose extra characters.
+            ],
+            "code_filter": "[r.replace('th day of', '').replace('rd day of', '') if r else r for r in results]"
+          },
+
+          "pub_date": {
+            "path": "body",
+            "is_date": true,
+            "code_filter": "kwargs['doc']['pub_date_src'] if not kwargs['doc']['location_pub_date'] else kwargs['doc']['location_pub_date']"
+          },
+
+          // here in the actual pub_date meta data we have a code filter that specifies the logic for when we will use which pub date variable that was generated. So here it's saying to use the pub date from pub_date source if there is no pub date found in pub date location.
+
+          "incomplete_pub_date": false
+        }
+      }
+    },
+    "category_conversion": [
+      {
+        "default_category": "News",
+        "category_approach": "closest_to_begin",
+        "conversion_map": {
+          "Annual Report": "Annual Report",
+          "Proclamation": "Proclamation",
+          "Supervisory Memo": "Memorandum",
+          "Memorandum": "Memorandum",
+          "Statement": "Statement"
+        }
+
+        //  here is the category conversion map for the child documents.
+      }
+    ]
+  }
+}

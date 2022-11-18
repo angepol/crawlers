@@ -139,6 +139,143 @@
 
 // crawler
 
+// {
+//   "spider_name": "unified-eu-ec-consolidated-financial-sanctions",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "EU",
+//   "agency": "[EU] European Union Council - Consolidated list of EU financial sanctions",
+//   "agency_id": 33100005,
+//   "short_name": "EU-EC",
+//   "category": "Financial Sanction",
+//   "base_url": "https://data.europa.eu/",
+//   "content_url": "https://data.europa.eu/data/datasets/consolidated-list-of-persons-groups-and-entities-subject-to-eu-financial-sanctions?locale=en",
+//   "specification": "https://docs.google.com/document/d/1NliFx1ZNlpl7EuXiNpJ59VKm93k3nJ8TNqtZ6sdJAro/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": "articles_step"
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body"]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "body > div > div.site-wrapper > div.d-flex.flex-column.p-0.bg-transparent.content"
+//           ]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["nav > h1"]
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "div.dsd-dataset > div.row.mt-4.mb-4.dsd-description > div > div > div > p:nth-of-type(1)"
+//             ]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "parent_context": "articles_step",
+//         "next_step": "click_to_expose_pdf"
+//       },
+//       "click_to_expose_pdf": {
+//         "description": "Clicking pdf dropdown",
+//         "actions": [
+//           {
+//             "path": "/html/body/div/div[4]/div[2]/div/div[2]/div[2]/div[3]/div/ul/div/div[5]/div/div[2]/div/div/div[1]/div/button",
+//             "type": "click"
+//           }
+//         ],
+//         "next_step": "ingest_pdf_url"
+//       },
+//       "ingest_pdf_url": {
+//         "description": "ingests the pdf_url",
+//         "save_document": false,
+//         "context": {
+//           "path": "div.dropdownMenu > span:nth-of-type(2) > a",
+//           "is_url": true
+//         },
+//         "doc": {
+//           "pdf_url": {
+//             "path": "div.dropdownMenu > span:nth-of-type(2) > a",
+//             "is_url": true
+//           }
+//         },
+//         "next_step": "find_date_in_pdf"
+//       },
+//       "find_date_in_pdf": {
+//         "debug": "true",
+//         "description": "Find date in pdf full text",
+//         "pre_generate_full_text": "pdf_url",
+//         "save_document": true,
+//         "doc": {
+//           "pub_date": {
+//             "is_single": true,
+//             "is_date": true,
+//             "is_text": true,
+//             "path": "body",
+//             "is_text_generated": true,
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
 {
   "spider_name": "unified-eu-ec-consolidated-financial-sanctions",
   "api_table": "fed_api_docs",
@@ -159,10 +296,10 @@
         "process_related_documents": false,
         "is_parent": false,
         "continue_crawl": false,
-        "next_step": "articles_step"
+        "next_step": ["articles_step"]
       },
       "articles_step": {
-        "description": "Getting a list of articles for the current page",
+        "description": "crawling articles",
         "save_document": false,
         "process_related_documents": false,
         "is_parent": false,
@@ -176,7 +313,37 @@
           "is_page_source": false,
           "path": ["body"]
         },
-        "next_step": ["items_step"]
+        "next_step": ["if_edge_step", "if_not_edge_step"]
+      },
+      "if_not_edge_step": {
+        "description": "If the title is 'Consolidated list of persons, groups and entities subject to EU financial sanctions'",
+        "save_document": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": true,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["body"],
+          "tag_filter": "[r for r in results if 'Consolidated list of persons, groups and entities subject to EU financial sanctions' in str(results[0].text)]"
+        },
+        "next_step": "items_step"
+      },
+      "if_edge_step": {
+        "description": "if the condition is an edge case",
+        "save_document": "false",
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": "div.row.flex-column.dsd-features > div:nth-of-type(3)",
+          "tag_filter": "[r for r in results if 'Documentation (1)' in str(results[0].text)]"
+        },
+        "next_step": "toggle_for_edge_case"
       },
       "items_step": {
         "description": "Getting metadata of the current article",
@@ -245,8 +412,7 @@
         "description": "ingests the pdf_url",
         "save_document": false,
         "context": {
-          "path": "div.dropdownMenu > span:nth-of-type(2) > a",
-          "is_url": true
+          "path": "div.dropdownMenu > span:nth-of-type(2) > a"
         },
         "doc": {
           "pdf_url": {
@@ -270,6 +436,76 @@
             "is_text_generated": true,
             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
           }
+        }
+      },
+      "toggle_for_edge_case": {
+        "description": "clicks to show meta data for this article",
+        "actions": [
+          {
+            "path": "/html/body/div/div[4]/div[2]/div/div[2]/div[2]/div[4]/div[3]/div/div[2]/span",
+            "type": "click"
+          }
+        ],
+        "next_step": "edge_case_items_step"
+      },
+      "edge_case_items_step": {
+        "description": "find title and pdf_url",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["div.row.flex-column.dsd-features > div:nth-of-type(3)"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": "ul > div > div > li > span > span > span > h3"
+          },
+          "pdf_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["ul > div > div > li > span > span > span > span > a"]
+          },
+          "incomplete_pub_date": true
+        },
+        "next_step": "details_step"
+      },
+      "details_step": {
+        "description": "getting full_text of the doc.",
+        "save_document": true,
+        "is_text_generated": true,
+        "pre_generate_full_text": "pdf_url",
+        "doc": {
+          "pdf_file": {
+            "path": "body"
+          },
+          "incomplete_pub_date": true
         }
       }
     }

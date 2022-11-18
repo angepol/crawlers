@@ -1,0 +1,18 @@
+
+          "custom_unified_docket_id": {
+            "is_single": true,
+            "is_text": true,
+            "path": "body",
+            "code_filter": "'{} - {} - {}'.format('CAN-FCAC', kwargs['doc']['title_code'], kwargs['doc']['session_year'])"
+          },
+
+          "title_separator": "-",
+          title_suffix: {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_date": true,
+            "dayfirst": false,
+            "path": "body",
+            "regex": "\\d{4}\\"
+          }

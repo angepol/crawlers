@@ -1,0 +1,738 @@
+//  Ali's crawler using code filters for edge cases.
+
+// {
+//   "spider_name": "unified-deu-bb-studies",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "DEU",
+//   "agency": "Bundesbank Germany",
+//   "agency_id": 27000002,
+//   "short_name": "DEU-BB",
+//   "category": "",
+//   "base_url": "https://www.bundesbank.de/de/",
+//   "content_url": "https://www.bundesbank.de/action/de/737872/bbksearch",
+//   "specification": "https://docs.google.com/document/d/1xxrpC-ByvUbeccZFZQPOhmpoj1NJEps3NPUuxCokbnc/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "continue_crawl": false,
+//         "next_step": ["german_articles_step", ">>next_page"]
+//       },
+//       "direct_pdf_articles_step": {
+//         "description": "get list of articles",
+//         "save_document": false,
+//         "continue_crawl": false,
+//         "create_relations": [
+//           {
+//             "relation_type": "language",
+//             "clear_existing_relations": true
+//           }
+//         ],
+//         "reset_counter": {
+//           "step": ["direct_pdf_items_step", "eng_items_step"]
+//         },
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.teasable.teasable--linked.teasable--flex > div.teasable__main-info"
+//           ],
+//           "tag_filter": "[tag for tag in results if 'PDF' in tag.text]"
+//         },
+//         "next_step": ["direct_pdf_items_step"]
+//       },
+//       "direct_pdf_items_step": {
+//         "description": "get metadata for article",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["div.metadata > a"]
+//         },
+//         "doc": {
+//           "language": "German",
+//           "index": "use_step_counter",
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.h2"],
+//             "extract_tags": {
+//               "path": ["small"]
+//             }
+//           },
+//           "category": "Research Publication",
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": [
+//               "div.teasable__text.teasable__text--icon > div.richtext > p"
+//             ]
+//           },
+//           "pdf_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.teasable__data > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": true,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.metadata > span.metadata__date"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": ["eng_items_step"],
+//         "parent_context": "articles_step"
+//       },
+//       "german_articles_step": {
+//         "description": "get list of articles",
+//         "save_document": false,
+//         "wait_before_request": 30,
+//         "continue_crawl": false,
+//         "reset_counter": {
+//           "step": [
+//             "german_detail_step",
+//             "ger_child_items_step",
+//             "eng_items_step",
+//             "eng_child_items_step"
+//           ]
+//         },
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.teasable.teasable--linked.teasable--flex > div.teasable__main-info"
+//           ],
+//           "tag_filter": "[tag for tag in results if 'PDF' not in tag.text]"
+//         },
+//         "next_step": ["multi"],
+//         "parent_context": ">> next_page_step"
+//       },
+//       "multi": {
+//         "description": "get list of articles",
+//         "save_document": false,
+//         "continue_crawl": false,
+//         "process_related_documents": true,
+//         "create_relations": [
+//           {
+//             "relation_type": "language",
+//             "clear_existing_relations": true
+//           }
+//         ],
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body"]
+//         },
+//         "next_step": ["german_items_step", "eng_articles_step"]
+//       },
+//       "german_items_step": {
+//         "description": "get metadata for article",
+//         "save_document": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["div.teasable__data > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.h2"],
+//             "extract_tags": {
+//               "path": ["small"]
+//             }
+//           },
+//           "parent_title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.h2"],
+//             "extract_tags": {
+//               "path": ["small"]
+//             }
+//           },
+//           "category": "Research Publication",
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": [
+//               "div.teasable__text.teasable__text--icon > div.richtext > p"
+//             ]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": true,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.metadata > span.metadata__date"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": ["german_detail_step"],
+//         "parent_context": "articles_step"
+//       },
+//       "german_detail_step": {
+//         "description": "get html full text",
+//         "save_document": true,
+//         "is_parent": true,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body"]
+//         },
+//         "doc": {
+//           "language": "German",
+//           "index": "use_step_counter",
+//           "pdf_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.mt-2 > a:nth-of-type(1)"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": ["ger_child_articles_step"]
+//       },
+//       "ger_child_articles_step": {
+//         "description": "get list of articles",
+//         "save_document": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["main.main > nav.linklist > ul > li"],
+//           "tag_filter": "[tag for tag in results if 'PDF' in tag.text]"
+//         },
+//         "next_step": ["ger_child_items_step"]
+//       },
+//       "ger_child_items_step": {
+//         "description": "get metadata for article",
+//         "save_document": true,
+//         "continue_crawl": false,
+//         "doc": {
+//           "language": null,
+//           "index": {
+//             "path": "body",
+//             "is_single": true,
+//             "index": "use_step_counter",
+//             "code_filter": "[i + 500 for i in range(1500)]"
+//           },
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "parent_title": "empty",
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div > a > div.teasable__title.mb-0 > div.h3"],
+//             "extract_tags": {
+//               "path": ["small"]
+//             },
+//             "code_filter": "' '.join(results) + '- ' + kwargs['doc']['parent_title']"
+//           },
+//           "pdf_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div > a"]
+//           },
+//           "category": {
+//             "path": null,
+//             "code_filter": "['Report' if 'Präsentation' in kwargs['doc']['parent_title'] else 'Blog' if 'Article' in kwargs['doc']['parent_title'] else 'Research Publication']"
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": true,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div > a > div.metadata > span.metadata__date"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "articles_step"
+//       },
+//       "eng_articles_step": {
+//         "description": "get list of articles",
+//         "save_document": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["div.metadata > a"]
+//         },
+//         "next_step": ["eng_items_step"]
+//       },
+//       "eng_items_step": {
+//         "description": "get metadata for article",
+//         "save_document": true,
+//         "is_parent": true,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["main.main > nav.linklist > ul > li"],
+//           "tag_filter": "[tag for tag in results if 'PDF' in tag.text]"
+//         },
+//         "doc": {
+//           "language": "English",
+//           "index": "use_step_counter",
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "parent_title": "empty",
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["main.main > h1"],
+//             "extract_tags": {
+//               "path": ["small"]
+//             }
+//           },
+//           "parent_title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["main.main > h1"],
+//             "extract_tags": {
+//               "path": ["small"]
+//             }
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["main.main > div.richtext.clearfix"]
+//           },
+//           "category": "Research Publication",
+//           "pdf_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div.mt-2 > a:nth-of-type(1)"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": true,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["main.main > div.metadata > span.metadata__date"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": ["eng_child_items_step"]
+//       },
+//       "eng_child_items_step": {
+//         "description": "get metadata for article",
+//         "save_document": true,
+//         "is_parent": false,
+//         "process_related_documents": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "language": null,
+//           "index": {
+//             "path": "body",
+//             "is_single": true,
+//             "index": "use_step_counter",
+//             "code_filter": "[i + 500 for i in range(1500)]"
+//           },
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "parent_title": "empty",
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div > a > div.teasable__title.mb-0 > div.h3"],
+//             "code_filter": "' '.join(results) + '- ' + kwargs['doc']['parent_title']",
+//             "extract_tags": {
+//               "path": ["small"]
+//             }
+//           },
+//           "category": {
+//             "path": null,
+//             "code_filter": "['Report' if 'Präsentation' in kwargs['doc']['parent_title'] else 'Blog' if 'Article' in kwargs['doc']['parent_title'] else 'Research Publication']"
+//           },
+//           "pdf_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": true,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "path": ["div > a > div.metadata > span.metadata__date"]
+//           },
+//           "incomplete_pub_date": false
+//         }
+//       },
+//       ">>next_page": {
+//         "description": "Process pagination",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["div.search__pagination > nav > ul > li:nth-of-type(7) > a"]
+//         },
+//         "next_step": ["german_articles_step", "direct_pdf_articles_step"]
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "Research Publication",
+//         "category_approach": "containing",
+//         "conversion_map": {
+//           "Präsentation": "Report",
+//           "Article": "Blog"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// Pengs way ofdoing category conversion where parent docs are diff to child
+
+// also his way of getting pub date from pdf
+
+{
+  "spider_name": "unified-nd-dfi-news",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-ND",
+  "agency": "North Dakota - North Dakota Department of Financial Institutions - News",
+  "agency_id": 2800004,
+  "short_name": "ND-DFI",
+  "category": "Agency Update",
+  "base_url": "https://www.nd.gov/",
+  "content_url": "https://www.nd.gov/dfi/news",
+  "specification": "https://docs.google.com/document/d/1PZmzld2CmPIO43cUl6y6U9Lf5GNvJjeTSijfVrz2JXs/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "next_step": ["article_step"]
+      },
+      "article_step": {
+        "description": "Getting the articles from the page",
+        "save_document": false,
+        "context": {
+          "path": "div.media-body"
+        },
+        "next_step": ["item_step"]
+      },
+      "item_step": {
+        "description": "Getting the metadata from the page",
+        "save_document": false,
+        "context": {
+          "is_url": true,
+          "path": "h2 > a"
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_single": true,
+            "path": "h2"
+          },
+          "pub_date": {
+            "is_date": true,
+            "is_text": true,
+            "is_single": true,
+            "path": "p.news-date"
+          },
+          "summary_text": {
+            "is_text": true,
+            "is_single": true,
+            "path": "div.body"
+          }
+        },
+        "next_step": ["detail_step"]
+      },
+      "detail_step": {
+        "description": "Getting the html from the page",
+        "save_document": true,
+        "is_parent": true,
+        "context": {
+          "path": "div.content-body a",
+          "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+        },
+        "doc": {
+          "title_prefix": null,
+          "pdf_url": null,
+          "html": {
+            "path": "section.col-sm-12",
+            "extract_tags": {
+              "path": [
+                "ol.breadcrumb",
+                "section#block-addtoanybuttons",
+                "p.addtoany-label"
+              ]
+            }
+          }
+        },
+        "next_step": ["get_child_doc_step"]
+      },
+      "get_child_doc_step": {
+        "description": "Getting any potential child documents",
+        "save_document": false,
+        "context": {
+          "path": "body"
+        },
+        "doc": {
+          "title_prefix": {
+            "is_single": true,
+            "is_text": true,
+            "path": "a"
+          },
+          "scraped_category": {
+            "is_single": true,
+            "is_text": true,
+            "path": "a"
+          },
+          "category": "conversion",
+          "title_separator": "--",
+          "pdf_url": {
+            "is_single": true,
+            "is_text": false,
+            "is_url": true,
+            "path": "a"
+          },
+          "html": null,
+          "pub_date": null,
+          "incomplete_pub_date": true
+        },
+        "next_step": ["get_pub_date_step"]
+      },
+      "get_pub_date_step": {
+        "description": "Getting the publication date via locations",
+        "save_document": true,
+        "doc": {
+          "pub_date": {
+            "is_date": true,
+            "parse_pdf": true,
+            "locations": [
+              {
+                "coordinates": {
+                  "top": "1",
+                  "bottom": "0",
+                  "left": "0",
+                  "right": "1"
+                },
+                "pages": "first"
+              },
+              {
+                "coordinates": {
+                  "top": "1",
+                  "bottom": "0",
+                  "left": "0",
+                  "right": "1"
+                },
+                "pages": "last"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "category_conversion": [
+      {
+        "default_category": "Guidance",
+        "category_approach": "containing",
+        "conversion_map": {
+          "Order": "Order",
+          "Guidance": "Guidance",
+          "Notice": "Notice",
+          "Proposed Rule": "Rule"
+        }
+      }
+    ]
+  }
+}

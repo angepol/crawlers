@@ -396,12 +396,4464 @@
 
 //  WIP - language relationships - with prefix to title and pdf_url for child document.
 
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["news_full_text_step"]
+//       },
+//       "news_full_text_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+//           },
+//           "title_prefix": {
+//             "is_text": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text of child documents.",
+//         "doc": {
+//           "html": null,
+//           "title": {
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "category": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     }
+//   }
+// }
+
+// filtering pdf's child docs
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "category_conversion": [
+//       {
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         },
+//         "default_category": "News"
+//       }
+//     ],
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "category": "News",
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["news_full_text_step"]
+//       },
+//       "news_full_text_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           },
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "separator": "",
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           },
+//           "scraped_category": {
+//             "path": "#content-wrapper > main > p > a",
+//             "is_text": true
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "html": null,
+//           "title": {
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "category": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     }
+//   }
+// }
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["news_full_text_step"]
+//       },
+//       "news_full_text_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "title_prefix": {
+//             "separator": "",
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           },
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "#content-wrapper > main > p > a"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "title_prefix": null,
+//           "html": null,
+//           "title": {
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "category": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// next try seperating out the steps similar to how Peng has done his crawler.
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "title_prefix": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           },
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "#content-wrapper > main > p > a"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+
+//           "title_prefix": null,
+//           "html": null,
+//           "title": {
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "category": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// team 4
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+
+//           "title_prefix": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// fixing the title
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// first add in the load more button
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step", "click_actions_load_more"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "click_actions_load_more"
+//       },
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// getting pub date from child doc ( pdf - use locations)
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["news_articles_step", "click_actions_load_more"]
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "click_actions_load_more"
+//       },
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// WIP click actions
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// Click actions working correctly.
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// Successfully retrieves pub_date from use locations. Will try this again.
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "get_pub_date_step"
+//       },
+//       "get_pub_date_step": {
+//         "description": "Getting the publication date from pdf via locations",
+//         "save_document": true,
+//         "doc": {
+//           "pub_date": {
+//             "is_date": true,
+//             "parse_pdf": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "first"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last"
+//               }
+//             ]
+//           }
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// Adds in edge case: when pub date is not available in the child doc then use the pub date from the parent doc. Find an example? Or make one. In this implementation the praent pub date is always attributed to the child.
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "parent_pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "get_pub_date_step"
+//       },
+//       "get_pub_date_step": {
+//         "description": "Getting the publication date from pdf via locations",
+//         "save_document": true,
+//         "doc": {
+//           "pub_date": {
+//             "is_date": true,
+//             "parse_pdf": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "first"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last"
+//               }
+//             ]
+//           }
+//         },
+//         "tag_filter": [
+//           "results if results else kwargs.get('doc').get('parent_pub_date')"
+//         ],
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// current implementation 3:45
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "get_pub_date_step"
+//       },
+//       "get_pub_date_step": {
+//         "description": "Getting the publication date from pdf via locations",
+//         "save_document": true,
+//         "doc": {
+//           "pub_date": {
+//             "is_date": true,
+//             "parse_pdf": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "first"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last"
+//               }
+//             ]
+//           }
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// Solution from Misha with code filter
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date_src": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "pub_date_location"
+//       },
+//       "get_pub_date_from_location": {
+//         "description": "Getting the publication date from pdf via locations",
+//         "save_document": true,
+//         "doc": {
+//           "pub_date_location": {
+//             "path": "body",
+//             "is_date": true,
+//             "code_filter": "kwargs['doc']['pub_date_location'] if not kwargs['doc']['pub_date_src'] else kwargs['doc']['pub_date_src']",
+//             "parse_pdf": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "first"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last"
+//               }
+//             ]
+//           }
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// add regex to find 'day of'
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "pub_date_src": {
+//             "path": "#content-wrapper > main > ul > li"
+//           },
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "pub_date_location"
+//       },
+//       "get_pub_date_from_location": {
+//         "description": "Getting the publication date from pdf via locations",
+//         "save_document": true,
+//         "doc": {
+//           "pub_date": {
+//             "path": "body",
+//             "is_date": true,
+//             "code_filter": "kwargs['doc']['pub_date_location'] if not kwargs['doc']['pub_date_src'] else kwargs['doc']['pub_date_src']",
+//             "regex": "(5th day of October, 2021)",
+//             "parse_pdf": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "first"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last"
+//               }
+//             ]
+//           }
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// // WIP with ALI
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "pub_date_src": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "news_articles_step",
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": {
+//             "is_url": true,
+//             "path": "#content-wrapper > main > p > a",
+//             "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//           }
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "pub_date": {
+//             "path": null,
+//             "code_filter": "'5 October, 2021' if kwargs['doc']['title_prefix'] == 'Proclamation' else str(kwargs['doc']['pub_date_src'])"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// "regex": "(5th day of October, 2021)",
+
+// parent docs are currently getting crawled as child docs.
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "save_document": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "pub_date_src": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "save_document": true,
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": null
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+//           "pub_date": {
+//             "path": null,
+//             "code_filter": "'5 October, 2021' if kwargs['doc']['title_prefix'] == 'Proclamation' else str(kwargs['doc']['pub_date_src'])"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// Pub date
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ],
+//           "tag_filter": "[tag for tag in results if 'proclamation' in tag.text.lower()]"
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "save_document": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "pub_date_src": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "save_document": true,
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": null
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "##_title_prefix": {
+//             "path": "a"
+//           },
+
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+
+//           "title_prefix": {
+//             "is_date": false,
+//             "parse_pdf": true,
+//             "is_single": true,
+//             "is_text": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "text_before": {
+//                   "text": "date:",
+//                   "ignore_case": true
+//                 },
+//                 "pages": "first",
+//                 "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last",
+//                 "regex": "\\d{1,2}[tndshr]*[day of]*(?:January|February|March|April|May|June|July|August|September|October|November|December)[, ]*\\d{4}"
+//               }
+//             ],
+//             "code_filter": "[r.replace('th day of', '').replace('rd day of', '') for r in results]"
+//           },
+
+//           "pub_date": {
+//             "path": "body",
+//             "is_date": true,
+//             "code_filter": "kwargs['doc']['pub_date_src'] if not kwargs['doc']['title_prefix'] else kwargs['doc']['title_prefix']"
+//           },
+
+//           "incomplete_pub_date": false
+//         }
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News ",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ],
+//           "tag_filter": [
+//             "[tag for tag in results if 'proclamation' in tag.text.lower()]"
+//           ]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "save_document": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "pub_date_src": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "save_document": true,
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": null
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "title_prefix": {
+//             "path": "a"
+//           },
+
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+
+//           "##_pub_date": {
+//             "path": null,
+//             "code_filter": "'5 October, 2021' if kwargs['doc']['title_prefix'] == 'Proclamation' else str(kwargs['doc']['pub_date_src'])"
+//           },
+
+//           "pub_date": {
+//             "path": null,
+//             "code_filter": "'5 October, 2021' if kwargs['doc']['title_prefix'] == 'Proclamation' else str(kwargs['doc']['pub_date_src'])"
+//           },
+
+//           "title_prefix": {
+//             "is_date": true,
+//             "parse_pdf": true,
+//             "is_single": true,
+//             "is_text": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "text_before": {
+//                   "text": "date:",
+//                   "ignore_case": true
+//                 },
+//                 "pages": "first",
+//                 "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last",
+//                 "regex": "\\d{1,2}[tndshr]*[day of]*(?:January|February|March|April|May|June|July|August|September|October|November|December)[, ]*\\d{4}"
+//               }
+//             ]
+//           },
+
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": "click_actions_load_more"
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": [
+//           "click_actions_load_more",
+//           "news_articles_step"
+//         ]
+//       },
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ],
+//           "tag_filter": "[tag for tag in results if 'proclamation' in tag.text.lower()]"
+//         },
+//         "next_step": [
+//           "items_step"
+//         ]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "save_document": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": [
+//             "h5 > a"
+//           ]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "h5 > a"
+//             ]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "h5 > a"
+//             ]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "small > span.date"
+//             ],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "pub_date_src": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "small > span.date"
+//             ],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": [
+//               "p.summary"
+//             ]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": [
+//           "parent_doc_step"
+//         ]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "save_document": true,
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+//           "html": {
+//             "path": [
+//               "#content-wrapper > main"
+//             ]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": null
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "##_title_prefix": {
+//             "path": "a"
+//           },
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+//           "title_prefix": {
+//             "is_date": false,
+//             "parse_pdf": true,
+//             "is_single": true,
+//             "is_text": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "text_before": {
+//                   "text": "date:",
+//                   "ignore_case": true
+//                 },
+//                 "pages": "first",
+//                 "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last",
+//                 "regex": "\\d{1,2}[tndshr]*[day of]*(?:January|February|March|April|May|June|July|August|September|October|November|December)[, ]*\\d{4}"
+//               }
+//             ],
+//             "code_filter": "[r.replace('th day of', '') for r in results]"
+//           },
+//           "pub_date": {
+//             "path": "body",
+//             "is_date": true,
+//             "code_filter": "kwargs['doc']['pub_date_src'] if not kwargs['doc']['title_prefix'] else kwargs['doc']['title_prefix']"
+//           },
+//           "incomplete_pub_date": false
+//         }
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// with Misha
+
+// {
+//   "spider_name": "unified-us-mt-dbfi-news",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-MT",
+//   "agency": "Montana Division Banking and Financial Institutions - News",
+//   "agency_id": 3100001,
+//   "short_name": "MT-DBFI",
+//   "category": "News",
+//   "base_url": "https://banking.mt.gov",
+//   "content_url": "https://banking.mt.gov/Home/newsmenu",
+//   "specification": "https://docs.google.com/document/d/1acPQRSvs3-TAdzCo-DrT7YwOiaxGktPcQ3XzeufUoXc/edit",
+//   "starting_date": "01/01/2020",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["click_actions_load_more", "news_articles_step"]
+//       },
+
+//       "click_actions_load_more": {
+//         "description": "click to load more articles",
+//         "save_document": false,
+//         "actions": [
+//           {
+//             "path": "//*[@id='content-wrapper']/main/div/div/button",
+//             "type": "click",
+//             "load_criteria": {
+//               "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+//               "timeout": 120
+//             }
+//           }
+//         ],
+//         "next_step": "news_articles_step"
+//       },
+//       "news_articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": true,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col"
+//           ],
+//           "tag_filter": "[tag for tag in results if 'proclamation' in tag.text.lower()]"
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "process_related_documents": false,
+//         "save_document": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["h5 > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["h5 > a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "pub_date_src": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["small > span.date"],
+//             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": ["p.summary"]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["parent_doc_step"]
+//       },
+//       "parent_doc_step": {
+//         "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+//         "save_document": true,
+//         "is_parent": true,
+//         "doc": {
+//           "title_prefix": null,
+//           "title": {
+//             "path": "#content-wrapper > main > h1"
+//           },
+
+//           "html": {
+//             "path": ["#content-wrapper > main"]
+//           },
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "category": "News",
+//           "pdf_url": null
+//         },
+//         "context": {
+//           "path": "#content-wrapper > main > p > a",
+//           "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
+//         },
+//         "next_step": "child_items_step"
+//       },
+//       "child_items_step": {
+//         "description": "Getting full text and publication date of child documents.",
+//         "save_document": true,
+//         "pre_generate_full_text": "pdf_url",
+//         "doc": {
+//           "category": "conversion",
+//           "title_separator": "--",
+//           "##_title_prefix": {
+//             "path": "a"
+//           },
+
+//           "html": null,
+//           "scraped_category": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "a"
+//           },
+//           "pdf_url": {
+//             "path": "a"
+//           },
+
+//           "title_prefix": {
+//             "is_date": false,
+//             "parse_pdf": true,
+//             "is_single": true,
+//             "is_text": true,
+//             "locations": [
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "text_before": {
+//                   "text": "date:",
+//                   "ignore_case": true
+//                 },
+//                 "pages": "first",
+//                 "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//               },
+//               {
+//                 "coordinates": {
+//                   "top": "1",
+//                   "bottom": "0",
+//                   "left": "0",
+//                   "right": "1"
+//                 },
+//                 "pages": "last",
+//                 "regex": "\\d{1,2}[tndshr]*[day of]*(?:January|February|March|April|May|June|July|August|September|October|November|December)[, ]*\\d{4}"
+//               }
+//             ],
+//             "code_filter": "[r.replace('th day of', '').replace('rd day of', '') for r in results]"
+//           },
+
+//           "pub_date": {
+//             "path": "body",
+//             "is_date": true,
+//             "code_filter": "kwargs['doc']['pub_date_src'] if not kwargs['doc']['title_prefix'] else kwargs['doc']['title_prefix']"
+//           },
+
+//           "incomplete_pub_date": false
+//         }
+//       }
+//     },
+//     "category_conversion": [
+//       {
+//         "default_category": "News",
+//         "category_approach": "closest_to_begin",
+//         "conversion_map": {
+//           "Annual Report": "Annual Report",
+//           "Proclamation": "Proclamation",
+//           "Supervisory Memo": "Memorandum",
+//           "Memorandum": "Memorandum",
+//           "Statement": "Statement"
+//         }
+//       }
+//     ]
+//   }
+// }
+
+// potentially the code filter needs str() code filter error and args
+
 {
   "spider_name": "unified-us-mt-dbfi-news",
   "api_table": "fed_api_docs",
   "meta_table": "agency_updates",
   "jurisdiction": "US-MT",
-  "agency": "Montana Division Banking and Financial Institutions - News ",
+  "agency": "Montana Division Banking and Financial Institutions - News",
   "agency_id": 3100001,
   "short_name": "MT-DBFI",
   "category": "News",
@@ -418,7 +4870,23 @@
         "process_related_documents": false,
         "is_parent": false,
         "continue_crawl": false,
-        "next_step": ["news_articles_step"]
+        "next_step": ["click_actions_load_more", "news_articles_step"]
+      },
+
+      "click_actions_load_more": {
+        "description": "click to load more articles",
+        "save_document": false,
+        "actions": [
+          {
+            "path": "//*[@id='content-wrapper']/main/div/div/button",
+            "type": "click",
+            "load_criteria": {
+              "path": "div.news > div.row.border-bottom.mb-5.mx-0.article.template > div.col",
+              "timeout": 120
+            }
+          }
+        ],
+        "next_step": "news_articles_step"
       },
       "news_articles_step": {
         "description": "Getting a list of articles for the current page",
@@ -442,6 +4910,7 @@
       "items_step": {
         "description": "Getting metadata of the current article",
         "process_related_documents": false,
+        "save_document": false,
         "is_parent": false,
         "continue_crawl": false,
         "context": {
@@ -492,27 +4961,41 @@
             "path": ["small > span.date"],
             "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
           },
+          "pub_date_src": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["small > span.date"],
+            "regex": "\\d{1,2}\\/\\d{1,2}\\/\\d{2,4}"
+          },
           "summary_text": {
             "is_text": true,
             "is_url": false,
             "is_single": true,
             "path": ["p.summary"]
           },
-          "incomplete_pub_date": false
+          "incomplete_pub_date": true
         },
-        "parent_context": "news_articles_step",
-        "next_step": ["news_full_text_step"]
+        "next_step": ["parent_doc_step"]
       },
-      "news_full_text_step": {
-        "description": "Constructing full text of parent document and getting list of child documents",
+      "parent_doc_step": {
+        "description": "Constructing full text of parent document, relevant meta_data and it's child documents",
+        "save_document": true,
         "is_parent": true,
         "doc": {
+          "title_prefix": null,
           "title": {
             "path": "#content-wrapper > main > h1"
           },
-          "pub_date": {
-            "path": "#content-wrapper > main > ul > li"
-          },
+
           "html": {
             "path": ["#content-wrapper > main"]
           },
@@ -520,39 +5003,92 @@
             "path": "body",
             "is_current_url": true
           },
-          "pdf_url": {
-            "is_url": true,
-            "path": "#content-wrapper > main > p > a",
-            "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
-          },
-          "title_prefix": {
-            "is_text": true,
-            "path": "#content-wrapper > main > p > a",
-            "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
-          }
+          "category": "News",
+          "pdf_url": null
         },
         "context": {
           "path": "#content-wrapper > main > p > a",
-          "tag_filter": "[tag for tag in results if kwargs['doc'].get('title') and 'href' in tag.attrs and '.pdf' in tag.attrs['href']]"
+          "tag_filter": "[tag for tag in results if 'href' in tag.attrs and '.pdf' in tag.attrs['href'] ]"
         },
         "next_step": "child_items_step"
       },
       "child_items_step": {
-        "description": "Getting full text of child documents.",
+        "description": "Getting full text and publication date of child documents.",
+        "save_document": true,
+        "pre_generate_full_text": "pdf_url",
         "doc": {
+          "category": "conversion",
+          "title_separator": "--",
+          "title_prefix": {
+            "path": "a"
+          },
+
           "html": null,
-          "title": {
+          "scraped_category": {
+            "is_single": true,
+            "is_text": true,
             "path": "a"
           },
           "pdf_url": {
             "path": "a"
           },
-          "category": {
-            "path": "a"
+
+          "location_pub_date": {
+            "is_date": false,
+            "parse_pdf": true,
+            "is_single": true,
+            "is_text": true,
+            "locations": [
+              {
+                "coordinates": {
+                  "top": "1",
+                  "bottom": "0",
+                  "left": "0",
+                  "right": "1"
+                },
+                "text_before": {
+                  "text": "date:",
+                  "ignore_case": true
+                },
+                "pages": "first",
+                "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+              },
+              {
+                "coordinates": {
+                  "top": "1",
+                  "bottom": "0",
+                  "left": "0",
+                  "right": "1"
+                },
+                "pages": "last",
+                "regex": "\\d{1,2}[tndshr]*[day of]*(?:January|February|March|April|May|June|July|August|September|October|November|December)[, ]*\\d{4}"
+              }
+            ],
+            "code_filter": "[r.replace('th day of', '').replace('rd day of', '') if r else r for r in results]"
           },
-          "incomplete_pub_date": true
+
+          "pub_date": {
+            "path": "body",
+            "is_date": true,
+            "code_filter": "kwargs['doc']['pub_date_src'] if not kwargs['doc']['location_pub_date'] else kwargs['doc']['location_pub_date']"
+          },
+
+          "incomplete_pub_date": false
         }
       }
-    }
+    },
+    "category_conversion": [
+      {
+        "default_category": "News",
+        "category_approach": "closest_to_begin",
+        "conversion_map": {
+          "Annual Report": "Annual Report",
+          "Proclamation": "Proclamation",
+          "Supervisory Memo": "Memorandum",
+          "Memorandum": "Memorandum",
+          "Statement": "Statement"
+        }
+      }
+    ]
   }
 }
