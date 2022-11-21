@@ -3307,6 +3307,1614 @@
 // }
 // changing meta table to enforcements - apparently this allows the respondent to come back
 
+// {
+//   "spider_name": "unified-can-fcac-decisions",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "enforcements",
+//   "jurisdiction": "CAN",
+//   "agency": "[CAN] Financial Consumer Agency of Canada-Decisions",
+//   "agency_id": 14000014,
+//   "short_name": "CAN-FCAC",
+//   "category": "Enforcement Decision",
+//   "base_url": "https://www.canada.ca/",
+//   "content_url": "https://www.canada.ca/en/financial-consumer-agency/services/industry/commissioner-decisions.html",
+//   "specification": "https://docs.google.com/document/d/1ZHYNjqQzIJps1o5J2U98Edm5hFQYa1AJfjpxCuXTEYI/edit",
+//   "starting_date": "01/01/2017",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step", "articles_step_edge"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' in tag.text]"
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the documents: title, pub_date, summary, respondent, docket_id, web_url",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "respondent": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{} - {}'.format('CAN-FCAC', kwargs['doc']['respondent'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step",
+//         "parent_context": "articles_step"
+//       },
+//       "articles_step_edge": {
+//         "description": "processing articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' not in tag.text]"
+//         },
+//         "next_step": ["items_step_edge"]
+//       },
+
+//       "items_step_edge": {
+//         "description": "Getting metadata for articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "title_code": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"],
+//             "code_filter": "[r.replace(' #', '') if r else r for r in results]"
+//           },
+
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "session_year": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{}-{}-{}'.format('CAN-FCAC', kwargs['doc']['title_code'], kwargs['doc']['session_year'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step",
+//         "parent_context": "articles_step_edge"
+//       },
+
+//       "details_step": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main"
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// remove getting back respondent.
+
+// {
+//   "spider_name": "unified-can-fcac-decisions",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "enforcements",
+//   "jurisdiction": "CAN",
+//   "agency": "[CAN] Financial Consumer Agency of Canada-Decisions",
+//   "agency_id": 14000014,
+//   "short_name": "CAN-FCAC",
+//   "category": "Enforcement Decision",
+//   "base_url": "https://www.canada.ca/",
+//   "content_url": "https://www.canada.ca/en/financial-consumer-agency/services/industry/commissioner-decisions.html",
+//   "specification": "https://docs.google.com/document/d/1ZHYNjqQzIJps1o5J2U98Edm5hFQYa1AJfjpxCuXTEYI/edit",
+//   "starting_date": "01/01/2017",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step", "articles_step_edge"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' in tag.text]"
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the documents: title, pub_date, summary, respondent, docket_id, web_url",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "respondent": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{} - {}'.format('CAN-FCAC', kwargs['doc']['respondent'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step",
+//         "parent_context": "articles_step"
+//       },
+//       "articles_step_edge": {
+//         "description": "processing articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' not in tag.text]"
+//         },
+//         "next_step": ["items_step_edge"]
+//       },
+
+//       "items_step_edge": {
+//         "description": "Getting metadata for articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "title_code": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"],
+//             "code_filter": "[r.replace(' #', '') if r else r for r in results]"
+//           },
+
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "session_year": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "respondent": null,
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{}-{}-{}'.format('CAN-FCAC', kwargs['doc']['title_code'], kwargs['doc']['session_year'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step",
+//         "parent_context": "articles_step_edge"
+//       },
+
+//       "details_step": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main"
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// html paths
+
+//
+
+// edge cases
+
+//  body > main > div:nth-child(3)
+//
+
+// normal
+
+//  body > main > div.mwsbodytext.text.parbase.section
+
+// Decision 135
+
+// body > main > div.parsys.section
+
+//  Here I will create an edge case for how the HTML documents will be crawled.
+//  There is an exception to 135 - which is an edge case.
+
+//  so I may need to make a code filter to provide the correct path for that doc.
+
+// {
+//   "spider_name": "unified-can-fcac-decisions",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "enforcements",
+//   "jurisdiction": "CAN",
+//   "agency": "[CAN] Financial Consumer Agency of Canada-Decisions",
+//   "agency_id": 14000014,
+//   "short_name": "CAN-FCAC",
+//   "category": "Enforcement Decision",
+//   "base_url": "https://www.canada.ca/",
+//   "content_url": "https://www.canada.ca/en/financial-consumer-agency/services/industry/commissioner-decisions.html",
+//   "specification": "https://docs.google.com/document/d/1ZHYNjqQzIJps1o5J2U98Edm5hFQYa1AJfjpxCuXTEYI/edit",
+//   "starting_date": "01/01/2017",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step", "articles_step_edge"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' in tag.text]"
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the documents: title, pub_date, summary, respondent, docket_id, web_url",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "respondent": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{} - {}'.format('CAN-FCAC', kwargs['doc']['respondent'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step",
+//         "parent_context": "articles_step"
+//       },
+//       "articles_step_edge": {
+//         "description": "processing articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' not in tag.text]"
+//         },
+//         "next_step": ["items_step_edge"]
+//       },
+
+//       "items_step_edge": {
+//         "description": "Getting metadata for articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "title_code": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"],
+//             "code_filter": "[r.replace(' #', '') if r else r for r in results]"
+//           },
+
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "session_year": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "respondent": null,
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{}-{}-{}'.format('CAN-FCAC', kwargs['doc']['title_code'], kwargs['doc']['session_year'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step_edge",
+//         "parent_context": "articles_step_edge"
+//       },
+
+//       "details_step": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main > div.mwsbodytext.text.parbase.section"
+//           }
+//         }
+//       },
+
+//       "details_step_edge": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main > div:nth-child(3)"
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// 3rd HTML structure edgecase... so for ed Doc 135!
+
+// {
+//   "spider_name": "unified-can-fcac-decisions",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "enforcements",
+//   "jurisdiction": "CAN",
+//   "agency": "[CAN] Financial Consumer Agency of Canada-Decisions",
+//   "agency_id": 14000014,
+//   "short_name": "CAN-FCAC",
+//   "category": "Enforcement Decision",
+//   "base_url": "https://www.canada.ca/",
+//   "content_url": "https://www.canada.ca/en/financial-consumer-agency/services/industry/commissioner-decisions.html",
+//   "specification": "https://docs.google.com/document/d/1ZHYNjqQzIJps1o5J2U98Edm5hFQYa1AJfjpxCuXTEYI/edit",
+//   "starting_date": "01/01/2017",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step", "articles_step_edge"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' in tag.text]"
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the documents: title, pub_date, summary, respondent, docket_id, web_url",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "respondent": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{} - {}'.format('CAN-FCAC', kwargs['doc']['respondent'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step",
+//         "parent_context": "articles_step"
+//       },
+//       "articles_step_edge": {
+//         "description": "processing articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' not in tag.text]"
+//         },
+//         "next_step": ["items_step_edge"]
+//       },
+
+//       "items_step_edge": {
+//         "description": "Getting metadata for articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "title_code": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"],
+//             "code_filter": "[r.replace(' #', '') if r else r for r in results]"
+//           },
+
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+
+//           "session_year": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+
+//           "respondent": null,
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{}-{}-{}'.format('CAN-FCAC', kwargs['doc']['title_code'], kwargs['doc']['session_year'])"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step_edge",
+//         "parent_context": "articles_step_edge"
+//       },
+
+//       "details_step": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true,
+//             "code_filter": ""
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main > div.mwsbodytext.text.parbase.section"
+//           }
+//         }
+//       },
+
+//       "details_step_edge": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main > div:nth-child(3)"
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// Improvements on HTML capturing add extract tags.
+
+// {
+//   "spider_name": "unified-can-fcac-decisions",
+//   "api_table": "fed_api_docs",
+//   "meta_table": "enforcements",
+//   "jurisdiction": "CAN",
+//   "agency": "[CAN] Financial Consumer Agency of Canada-Decisions",
+//   "agency_id": 14000014,
+//   "short_name": "CAN-FCAC",
+//   "category": "Enforcement Decision",
+//   "base_url": "https://www.canada.ca/",
+//   "content_url": "https://www.canada.ca/en/financial-consumer-agency/services/industry/commissioner-decisions.html",
+//   "specification": "https://docs.google.com/document/d/1ZHYNjqQzIJps1o5J2U98Edm5hFQYa1AJfjpxCuXTEYI/edit",
+//   "starting_date": "01/01/2017",
+//   "is_check_all": true,
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step", "articles_step_edge"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' in tag.text]"
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the documents: title, pub_date, summary, respondent, docket_id, web_url",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+//           "respondent": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "is_text_generated": false,
+//             "path": "body",
+//             "regex": "alleged that.(.*?).committed"
+//           },
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{} - {}'.format('CAN-FCAC', kwargs['doc']['respondent'])"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step",
+//         "parent_context": "articles_step"
+//       },
+//       "articles_step_edge": {
+//         "description": "processing articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["body > main > div:nth-child(3)"],
+//           "split_by_path": {
+//             "path": "p"
+//           },
+//           "tag_filter": "[tag for tag in results if 'alleged that' not in tag.text]"
+//         },
+//         "next_step": ["items_step_edge"]
+//       },
+//       "items_step_edge": {
+//         "description": "Getting metadata for articles with no respondent in text",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "path": ["a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "title_code": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"],
+//             "code_filter": "[r.replace(' #', '') if r else r for r in results]"
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+//           },
+//           "session_year": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+//           "title_separator": "-",
+//           "title_suffix": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "path": "body",
+//             "regex": "\\d{4}"
+//           },
+//           "respondent": null,
+//           "custom_unified_docket_id": {
+//             "is_single": true,
+//             "is_text": true,
+//             "path": "body",
+//             "code_filter": "'{}-{}-{}'.format('CAN-FCAC', kwargs['doc']['title_code'], kwargs['doc']['session_year'])"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_single": true,
+//             "path": "body",
+//             "extract_tags": {
+//               "path": ["a", "li:nth-of-type(1)"]
+//             }
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": "details_step_edge",
+//         "parent_context": "articles_step_edge"
+//       },
+//       "details_step": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main > div.mwsbodytext.text.parbase.section"
+//           }
+//         }
+//       },
+//       "details_step_edge": {
+//         "description": "Get the HTML full text",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "web_url": {
+//             "path": "body",
+//             "is_current_url": true
+//           },
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "body > main > div:nth-child(3)",
+//             "extract_tags": {
+//               "path": [
+//                 "body > main > div:nth-child(3) > div.mwsfootnotes-html.section"
+//               ]
+//             }
+//           }
+//         }
+//       }
+//     }
+//   }
+// }
+
+// so edge case # 2
+
+// Decision 135 path -
+// body > main > div.parsys.section
+
 {
   "spider_name": "unified-can-fcac-decisions",
   "api_table": "fed_api_docs",
@@ -3329,8 +4937,149 @@
         "process_related_documents": false,
         "is_parent": false,
         "continue_crawl": false,
-        "next_step": ["articles_step", "articles_step_edge"]
+        "next_step": [
+          "articles_step_edge_one",
+          "articles_step",
+          "articles_step_edge_two"
+        ]
       },
+      "articles_step_edge_one": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["body > main > div:nth-child(3)"],
+          "split_by_path": {
+            "path": "p"
+          },
+          "tag_filter": "[tag for tag in results if 'Decision #135' in tag.text]"
+        },
+        "next_step": ["items_step_edge_one"]
+      },
+      "items_step_edge_one": {
+        "description": "Getting metadata of the documents: title, pub_date, summary, respondent, docket_id, web_url",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "path": ["a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_date": true,
+            "dayfirst": false,
+            "path": "body",
+            "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
+          },
+          "respondent": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_date": false,
+            "dayfirst": false,
+            "is_text_generated": false,
+            "path": "body",
+            "regex": "alleged that.(.*?).committed"
+          },
+          "title_separator": "-",
+          "title_suffix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_date": false,
+            "dayfirst": false,
+            "is_text_generated": false,
+            "path": "body",
+            "regex": "alleged that.(.*?).committed"
+          },
+          "custom_unified_docket_id": {
+            "is_single": true,
+            "is_text": true,
+            "path": "body",
+            "code_filter": "'{} - {}'.format('CAN-FCAC', kwargs['doc']['respondent'])"
+          },
+          "summary_text": {
+            "is_text": true,
+            "is_single": true,
+            "path": "body",
+            "extract_tags": {
+              "path": ["a", "li:nth-of-type(1)"]
+            }
+          },
+          "incomplete_pub_date": true
+        },
+        "next_step": "details_step_edge_one",
+        "parent_context": "articles_step_edge_one"
+      },
+      "details_step_edge_one": {
+        "description": "Get the HTML full text",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "web_url": {
+            "path": "body",
+            "is_current_url": true
+          },
+          "html": {
+            "is_text": false,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": "body > main > div.parsys.section"
+          }
+        }
+      },
+
       "articles_step": {
         "description": "Getting a list of articles for the current page",
         "save_document": false,
@@ -3400,7 +5149,6 @@
             "path": "body",
             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
           },
-
           "respondent": {
             "is_text": true,
             "is_url": false,
@@ -3422,14 +5170,12 @@
             "path": "body",
             "regex": "alleged that.(.*?).committed"
           },
-
           "custom_unified_docket_id": {
             "is_single": true,
             "is_text": true,
             "path": "body",
             "code_filter": "'{} - {}'.format('CAN-FCAC', kwargs['doc']['respondent'])"
           },
-
           "summary_text": {
             "is_text": true,
             "is_single": true,
@@ -3438,13 +5184,39 @@
               "path": ["a", "li:nth-of-type(1)"]
             }
           },
-
           "incomplete_pub_date": true
         },
         "next_step": "details_step",
         "parent_context": "articles_step"
       },
-      "articles_step_edge": {
+      "details_step": {
+        "description": "Get the HTML full text",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "web_url": {
+            "path": "body",
+            "is_current_url": true
+          },
+          "html": {
+            "is_text": false,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": "body > main > div.mwsbodytext.text.parbase.section"
+          }
+        }
+      },
+      "articles_step_edge_two": {
         "description": "processing articles with no respondent in text",
         "save_document": false,
         "process_related_documents": false,
@@ -3463,10 +5235,9 @@
           },
           "tag_filter": "[tag for tag in results if 'alleged that' not in tag.text]"
         },
-        "next_step": ["items_step_edge"]
+        "next_step": ["items_step_edge_two"]
       },
-
-      "items_step_edge": {
+      "items_step_edge_two": {
         "description": "Getting metadata for articles with no respondent in text",
         "save_document": false,
         "process_related_documents": false,
@@ -3506,7 +5277,6 @@
             "path": ["a"],
             "code_filter": "[r.replace(' #', '') if r else r for r in results]"
           },
-
           "web_url": {
             "is_text": false,
             "is_url": true,
@@ -3521,7 +5291,6 @@
             "is_text_generated": false,
             "path": ["a"]
           },
-
           "pub_date": {
             "is_text": true,
             "is_url": false,
@@ -3531,7 +5300,6 @@
             "path": "body",
             "regex": "\\w+\\s*\\d{1,2}[ ,]*20\\d{2}"
           },
-
           "session_year": {
             "is_text": true,
             "is_url": false,
@@ -3541,7 +5309,6 @@
             "path": "body",
             "regex": "\\d{4}"
           },
-
           "title_separator": "-",
           "title_suffix": {
             "is_text": true,
@@ -3552,14 +5319,13 @@
             "path": "body",
             "regex": "\\d{4}"
           },
-
+          "respondent": null,
           "custom_unified_docket_id": {
             "is_single": true,
             "is_text": true,
             "path": "body",
             "code_filter": "'{}-{}-{}'.format('CAN-FCAC', kwargs['doc']['title_code'], kwargs['doc']['session_year'])"
           },
-
           "summary_text": {
             "is_text": true,
             "is_single": true,
@@ -3568,14 +5334,13 @@
               "path": ["a", "li:nth-of-type(1)"]
             }
           },
-
           "incomplete_pub_date": true
         },
-        "next_step": "details_step",
-        "parent_context": "articles_step_edge"
+        "next_step": "details_step_edge_two",
+        "parent_context": "articles_step_edge_two"
       },
 
-      "details_step": {
+      "details_step_edge_two": {
         "description": "Get the HTML full text",
         "save_document": true,
         "process_related_documents": false,
@@ -3598,7 +5363,12 @@
             "from_url": false,
             "is_current_url": false,
             "is_text_generated": false,
-            "path": "body > main"
+            "path": "body > main > div:nth-child(3)",
+            "extract_tags": {
+              "path": [
+                "body > main > div:nth-child(3) > div.mwsfootnotes-html.section"
+              ]
+            }
           }
         }
       }
