@@ -1,0 +1,319 @@
+// {
+//   "spider_name": "unified-int-bis-news-archive",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "proposed_rule",
+//   "jurisdiction": "INT",
+//   "agency": "[INT] Bank for International Settlements - News Archive ",
+//   "agency_id": 12000001,
+//   "short_name": "INT-BIS",
+//   "category": "News Archive",
+//   "base_url": "https://www.bis.org/press/wnew.htm?m=1141&newsarchive",
+//   "content_url": "https://www.bis.org/press/wnew.htm?m=1141&newsarchive=ZnJvbT0mdGlsbD0mb2JqaWQ9bmV3c2FyY2hpdmUmcGFnZT0mcGFnaW5nX2xlbmd0aD0yNSZzb3J0X2xpc3Q9ZGF0ZV9kZXNjJnRoZW1lPW5ld3NhcmNoaXZlJm1sPWZhbHNlJm1sdXJsPSZlbXB0eWxpc3R0ZXh0PQ%253D%253D",
+//   "specification": "https://docs.google.com/document/d/1Aw85fFRlk_pHduFBuizU8SEUYxh8JsobDom4Q7FgvYU/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step"]
+//       },
+//       "articles_step": {
+//         "description": "Getting a list of articles for the current page",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["#newsarchive_list > div > table > tbody > tr"]
+//         },
+//         "next_step": ["items_step"]
+//       },
+//       "items_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["td > div.title > a"]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["td > div.title"]
+//           },
+
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["td > div.title > a"]
+//           },
+
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "td.item_date"
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["details_step"],
+//         "parent_context": "articles_step"
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the doc",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "html": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["#center"]
+//           },
+//           "incomplete_pub_date": true
+//         }
+//       }
+//     }
+//   }
+// }
+
+// split by path
+
+{
+  "spider_name": "unified-int-bis-news-archive",
+  "api_table": "legal_api_docs",
+  "meta_table": "proposed_rule",
+  "jurisdiction": "INT",
+  "agency": "[INT] Bank for International Settlements - News Archive ",
+  "agency_id": 12000001,
+  "short_name": "INT-BIS",
+  "category": "News Archive",
+  "base_url": "https://www.bis.org/press/wnew.htm?m=1141&newsarchive",
+  "content_url": "https://www.bis.org/press/wnew.htm?m=1141&newsarchive=ZnJvbT0mdGlsbD0mb2JqaWQ9bmV3c2FyY2hpdmUmcGFnZT0mcGFnaW5nX2xlbmd0aD0yNSZzb3J0X2xpc3Q9ZGF0ZV9kZXNjJnRoZW1lPW5ld3NhcmNoaXZlJm1sPWZhbHNlJm1sdXJsPSZlbXB0eWxpc3R0ZXh0PQ%253D%253D",
+  "specification": "https://docs.google.com/document/d/1Aw85fFRlk_pHduFBuizU8SEUYxh8JsobDom4Q7FgvYU/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["#newsarchive_list > div > table > tbody"],
+          "split_by_path": {
+            "path": ["tr"]
+          }
+        },
+        "next_step": ["items_step"]
+      },
+      "items_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["td > div.title > a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td > div.title"]
+          },
+
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["td > div.title > a"]
+          },
+
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": true,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": "td.item_date",
+            "regex": "\\d{2}\\s+\\w+\\s+\\d{2,4}"
+          },
+          "incomplete_pub_date": true
+        },
+        "next_step": ["details_step"],
+        "parent_context": "articles_step"
+      },
+      "details_step": {
+        "description": "Getting full_text of the doc",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "html": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["#center"]
+          },
+          "incomplete_pub_date": true
+        }
+      }
+    }
+  }
+}
+
+
+
+// HTML structure is inconsistent
+
+
+
+1.
+
+#_press_p221121a_htm > div:nth-child(5)
+
+
+2.
+#center
+
+
+3.
+#_press_p221121_htm > div:nth-child(5)
+
+
+4.
+#center
+
+5.
+#center
+
+
+6.
+#center
+
+
+7.
+#center
+
+
+8.
+#center
+
+9.
+#center
+
+
+10.
+
+#center
+
+
+11.
+
+#center

@@ -1,0 +1,136 @@
+// Chinese Document
+
+// I have just fixed the path for articles...
+
+{
+  "spider_name": "unified-chn-cbirc-announcements",
+  "api_table": "fed_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "CHN",
+  "agency": "270000002",
+  "agency_id": 270000002,
+  "short_name": "CHN-CBIRC",
+  "category": "Announcement ",
+  "base_url": "https://www.cbirc.gov.cn",
+  "content_url": "https://www.cbirc.gov.cn/cn/view/pages/ItemList.html?itemPId=923&itemId=925&itemUrl=ItemListRightList.html&itemName=%E5%85%AC%E5%91%8A%E9%80%9A%E7%9F%A5  ",
+  "specification": "https://docs.google.com/document/d/1YNvXx8HRywwg88Ha4ILnsTk8fHmixR2bY16EkCi6zAs/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "Getting a list of articles for the current page",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": [
+            "body > div.main.ng-scope > div.content.ng-scope > div.main > div > div.caidan-right-div > div > div > div.ng-scope > div:nth-of-type(1) > div > div > div"
+          ]
+        },
+        "next_step": ["items_step"]
+      },
+      "items_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["span.title > a"]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["span.title"]
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["span.title > a"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["span.date.ng-binding"]
+          },
+          "incomplete_pub_date": true
+        },
+        "next_step": ["details_step"]
+      },
+      "details_step": {
+        "description": "Getting full_text of the doc",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "html": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": [
+              "body > div.main.ng-scope > div:nth-child(1) > div:nth-child(1) > div.content.newcontent > div.container"
+            ]
+          },
+          "incomplete_pub_date": true
+        }
+      }
+    }
+  }
+}

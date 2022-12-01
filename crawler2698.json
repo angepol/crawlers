@@ -1,0 +1,988 @@
+// Medha's crawler
+
+// {
+//   "spider_name": "unified-us-ny-dcwp-press-releases",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-NY",
+//   "agency": "New York City Department of Consumer Affairs",
+//   "agency_id": 400015,
+//   "short_name": "NY-DCWP",
+//   "category": "Press Release",
+//   "base_url": "https://www1.nyc.gov/site/dca/index.page",
+//   "content_url": "https://www1.nyc.gov/site/dca/media/news.page",
+//   "specification": "https://docs.google.com/document/d/1pTV5tw9Uw5s4j8cRCWSETyF5pHOc4jZq1bq4tujbM8E/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": [
+//           "articles_step"
+//         ]
+//       },
+//       "articles_step": {
+//         "description": "To load the list of articles",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "div.span6.about-description > p"
+//           ]
+//         },
+//         "next_step": [
+//           "item_step"
+//         ]
+//       },
+//       "item_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": [
+//             "a:nth-of-type(1)"
+//           ],
+//           "code_filter": [
+//             "[url for url in results if isinstance(url, str) and ('https://www1.nyc.gov/site/dca/' in url.lower() or 'https://www.nyc.gov/site/dca/' in url.lower())]"
+//           ]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "a:nth-of-type(1)"
+//             ]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "p"
+//             ],
+//             "regex": "(?i)(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": "div > div > div.span9.about-main-image > div > p",
+//             "extract_tags": {
+//               "path": [
+//                 "a:nth-of-type(1)",
+//                 "p"
+//               ]
+//             }
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "a"
+//             ]
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "next_step": [
+//           "details_step"
+//         ],
+//         "parent_context": "articles_step"
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the current article",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": [
+//               "div.span9.about-main-image > div"
+//             ],
+//             "extract_tags": {
+//               "path": [
+//                 "div.span6 > img"
+//               ]
+//             }
+//           },
+//           "incomplete_pub_date": false
+//         },
+//         "parent_context": "item_step"
+//       }
+//     }
+//   }
+// }
+
+// Try with regex in the extract tags ( to remove pub date)
+
+{
+  "spider_name": "unified-us-ny-dcwp-press-releases",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-NY",
+  "agency": "New York City Department of Consumer Affairs",
+  "agency_id": 400015,
+  "short_name": "NY-DCWP",
+  "category": "Press Release",
+  "base_url": "https://www1.nyc.gov/site/dca/index.page",
+  "content_url": "https://www1.nyc.gov/site/dca/media/news.page",
+  "specification": "https://docs.google.com/document/d/1pTV5tw9Uw5s4j8cRCWSETyF5pHOc4jZq1bq4tujbM8E/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "To load the list of articles",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["div.span6.about-description > p"]
+        },
+        "next_step": ["item_step"]
+      },
+
+      "item_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": true,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": ["a:nth-of-type(1)"],
+          "code_filter": [
+            "[url for url in results if isinstance(url, str) and ('https://www1.nyc.gov/site/dca/' in url.lower() or 'https://www.nyc.gov/site/dca/' in url.lower())]"
+          ]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a:nth-of-type(1)"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["p"],
+            "regex": "(?i)(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}"
+          },
+
+          "title_separator": "-",
+          "title_prefix": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": "div > div > div.span9.about-main-image > div > p",
+            "extract_tags": {
+              "path": "a:nth-of-type(1)"
+            },
+            "regex": "(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[, ]*(January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}[, ]*\\s+\\d{2,4}.(.*$)"
+          },
+
+          "summary_text": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": "div > div > div.span9.about-main-image > div > p",
+            "extract_tags": {
+              "path": "a:nth-of-type(1)"
+            },
+            "regex": "(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[, ]*(January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}[, ]*\\s+\\d{2,4}.(.*$)"
+          },
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"]
+          },
+          "incomplete_pub_date": false
+        },
+        "next_step": ["details_step"],
+        "parent_context": "articles_step"
+      },
+      "details_step": {
+        "description": "Getting full_text of the current article",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "html": {
+            "is_text": false,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div.span9.about-main-image > div"],
+            "extract_tags": {
+              "path": ["div.span6 > img"]
+            }
+          },
+          "incomplete_pub_date": false
+        },
+        "parent_context": "item_step"
+      }
+    }
+  }
+}
+
+// playing with Summary text.
+
+// I have added the extract tags back in - plus added a regex.
+
+// {
+//   "spider_name": "unified-us-ny-dcwp-press-releases",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-NY",
+//   "agency": "New York City Department of Consumer Affairs",
+//   "agency_id": 400015,
+//   "short_name": "NY-DCWP",
+//   "category": "Press Release",
+//   "base_url": "https://www1.nyc.gov/site/dca/index.page",
+//   "content_url": "https://www1.nyc.gov/site/dca/media/news.page",
+//   "specification": "https://docs.google.com/document/d/1pTV5tw9Uw5s4j8cRCWSETyF5pHOc4jZq1bq4tujbM8E/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step"]
+//       },
+//       "articles_step": {
+//         "description": "To load the list of articles",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["div.span6.about-description > p"]
+//         },
+//         "next_step": ["item_step"]
+//       },
+
+//       "item_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["a:nth-of-type(1)"],
+//           "code_filter": [
+//             "[url for url in results if isinstance(url, str) and ('https://www1.nyc.gov/site/dca/' in url.lower() or 'https://www.nyc.gov/site/dca/' in url.lower())]"
+//           ]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a:nth-of-type(1)"]
+//           },
+
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["p"],
+//             "regex": "(?i)(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}"
+//           },
+
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": "div > div > div.span9.about-main-image > div > p",
+//             "extract_tags": {
+//               "path": ["a:nth-of-type(1)", "p"],
+//               "regex": "(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[, ]*(January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}[, ]*\\s+\\d{2,4}.(.*$)"
+//             }
+//           },
+
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["details_step"],
+//         "parent_context": "articles_step"
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the current article",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["div.span9.about-main-image > div"],
+//             "extract_tags": {
+//               "path": ["div.span6 > img"]
+//             }
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "parent_context": "item_step"
+//       }
+//     }
+//   }
+// }
+
+// Looking at Summary text for this crawler
+
+// {
+//   "spider_name": "unified-us-ny-dcwp-press-releases",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-NY",
+//   "agency": "New York City Department of Consumer Affairs",
+//   "agency_id": 400015,
+//   "short_name": "NY-DCWP",
+//   "category": "Press Release",
+//   "base_url": "https://www1.nyc.gov/site/dca/index.page",
+//   "content_url": "https://www.nyc.gov/site/dca/media/news.page",
+//   "specification": "https://docs.google.com/document/d/1pTV5tw9Uw5s4j8cRCWSETyF5pHOc4jZq1bq4tujbM8E/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step"]
+//       },
+//       "articles_step": {
+//         "description": "To load the list of articles",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["div.span6.about-description > p"]
+//         },
+//         "next_step": ["item_step"]
+//       },
+//       "item_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["a:nth-of-type(1)"],
+//           "code_filter": [
+//             "[url for url in results if isinstance(url, str) and ('https://www1.nyc.gov/site/dca/' in url.lower() or 'https://www.nyc.gov/site/dca/' in url.lower())]"
+//           ]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a:nth-of-type(1)"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["p"],
+//             "regex": "(?i)(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": "div > div > div.span9.about-main-image > div > p",
+//             "extract_tags": {
+//               "path": ["a:nth-of-type(1)", "p"],
+//               "regex": "(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[, ]*(January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}[, ]*\\s+\\d{2,4}.(.*$)"
+//             }
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["details_step"],
+//         "parent_context": "articles_step"
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the current article",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["div.span9.about-main-image > div"],
+//             "extract_tags": {
+//               "path": ["div.span6 > img"]
+//             }
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "parent_context": "item_step"
+//       }
+//     }
+//   }
+// }
+
+// Split by path
+// Misha suggestion
+// config # 1
+
+// This is a crawler that team # 4 worked on
+// This the first config
+
+// It doesn't accurately select the summary_text.
+
+// {
+//   "spider_name": "unified-us-ny-dcwp-press-releases",
+//   "api_table": "legal_api_docs",
+//   "meta_table": "agency_updates",
+//   "jurisdiction": "US-NY",
+//   "agency": "New York City Department of Consumer Affairs",
+//   "agency_id": 400015,
+//   "short_name": "NY-DCWP",
+//   "category": "Press Release",
+//   "base_url": "https://www1.nyc.gov/site/dca/index.page",
+//   "content_url": "https://www1.nyc.gov/site/dca/media/news.page",
+//   "specification": "https://docs.google.com/document/d/1pTV5tw9Uw5s4j8cRCWSETyF5pHOc4jZq1bq4tujbM8E/edit",
+//   "configurations": {
+//     "steps": {
+//       "start": {
+//         "description": "Starting step that loads main web-page.",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "next_step": ["articles_step"]
+//       },
+//       "articles_step": {
+//         "description": "To load the list of articles",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": false,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["div.span6.about-description > p"]
+//         },
+//         "next_step": ["item_step"]
+//       },
+//       "item_step": {
+//         "description": "Getting metadata of the current article",
+//         "save_document": false,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "context": {
+//           "is_url": true,
+//           "is_text": false,
+//           "is_single": false,
+//           "is_sibling_tag": false,
+//           "combine_context": false,
+//           "is_page_source": false,
+//           "path": ["a:nth-of-type(1)"],
+//           "code_filter": [
+//             "[url for url in results if isinstance(url, str) and ('https://www1.nyc.gov/site/dca/' in url.lower() or 'https://www.nyc.gov/site/dca/' in url.lower())]"
+//           ]
+//         },
+//         "doc": {
+//           "title": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a:nth-of-type(1)"]
+//           },
+//           "pub_date": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": true,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["p"],
+//             "regex": "(?i)(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}"
+//           },
+//           "summary_text": {
+//             "is_text": true,
+//             "is_url": false,
+//             "is_single": true,
+//             "path": "div > div > div.span9.about-main-image > div > p",
+//             "extract_tags": {
+//               "path": ["a:nth-of-type(1)", "p"],
+//               "regex": "(?:Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)[, ]*(January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2}[, ]*\\s+\\d{2,4}.(.*$)"
+//             }
+//           },
+//           "web_url": {
+//             "is_text": false,
+//             "is_url": true,
+//             "is_single": true,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["a"]
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "next_step": ["details_step"],
+//         "parent_context": "articles_step"
+//       },
+//       "details_step": {
+//         "description": "Getting full_text of the current article",
+//         "save_document": true,
+//         "process_related_documents": false,
+//         "is_parent": false,
+//         "continue_crawl": false,
+//         "doc": {
+//           "html": {
+//             "is_text": false,
+//             "is_url": false,
+//             "is_single": false,
+//             "is_sibling_tag": false,
+//             "is_sibling_text": false,
+//             "is_date": false,
+//             "dayfirst": false,
+//             "parse_pdf": false,
+//             "from_url": false,
+//             "is_current_url": false,
+//             "is_text_generated": false,
+//             "path": ["div.span9.about-main-image > div"],
+//             "extract_tags": {
+//               "path": ["div.span6 > img"]
+//             }
+//           },
+//           "incomplete_pub_date": true
+//         },
+//         "parent_context": "item_step"
+//       }
+//     }
+//   }
+// }
+
+// This config attempts to seperate out the step for crawling the summary_text.
+
+{
+  "spider_name": "unified-us-ny-dcwp-press-releases",
+  "api_table": "legal_api_docs",
+  "meta_table": "agency_updates",
+  "jurisdiction": "US-NY",
+  "agency": "New York City Department of Consumer Affairs",
+  "agency_id": 400015,
+  "short_name": "NY-DCWP",
+  "category": "Press Release",
+  "base_url": "https://www1.nyc.gov/site/dca/index.page",
+  "content_url": "https://www.nyc.gov/site/dca/media/news.page",
+  "specification": "https://docs.google.com/document/d/1pTV5tw9Uw5s4j8cRCWSETyF5pHOc4jZq1bq4tujbM8E/edit",
+  "configurations": {
+    "steps": {
+      "start": {
+        "description": "Starting step that loads main web-page.",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "next_step": ["articles_step"]
+      },
+      "articles_step": {
+        "description": "To load the list of articles",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": "div > div > div.span9.about-main-image > div > p"
+        },
+        "next_step": ["item_step"]
+      },
+      "item_step": {
+        "description": "Getting metadata of the current article",
+        "save_document": false,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "context": {
+          "is_url": false,
+          "is_text": false,
+          "is_single": false,
+          "is_sibling_tag": false,
+          "combine_context": false,
+          "is_page_source": false,
+          "path": "body > p",
+          "split_by_path": {
+            "path": "br"
+          },
+          "siblings": [2, null]
+        },
+        "doc": {
+          "title": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a:nth-of-type(1)"]
+          },
+          "pub_date": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": true,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["p"],
+            "regex": "(?i)(?:January|February|March|April|May|June|July|August|September|October|November|December)\\s+\\d{1,2},\\s+\\d{4}"
+          },
+
+          "web_url": {
+            "is_text": false,
+            "is_url": true,
+            "is_single": true,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["a"],
+            "code_filter": [
+              "[url for url in results if isinstance(url, str) and ('https://www1.nyc.gov/site/dca/' in url.lower() or 'https://www.nyc.gov/site/dca/' in url.lower())]"
+            ]
+          },
+          "incomplete_pub_date": true
+        },
+
+        "next_step": ["get_summary_step"]
+      },
+
+      "get_summary_step": {
+        "description": "Getting the summary text",
+        "save_document": false,
+        "context": {
+          "is_single": true,
+          "path": "body",
+          "is_url": true,
+          "code_filter": "[kwargs['doc']['web_url']]"
+        },
+        "doc": {
+          "summary_text": {
+            "is_text": true,
+            "is_url": false,
+            "is_single": true,
+            "path": "body"
+          },
+          "incomplete_pub_date": true
+        },
+        "next_step": ["details_step"]
+      },
+
+      "details_step": {
+        "description": "Getting full_text of the current article",
+        "save_document": true,
+        "process_related_documents": false,
+        "is_parent": false,
+        "continue_crawl": false,
+        "doc": {
+          "html": {
+            "is_text": false,
+            "is_url": false,
+            "is_single": false,
+            "is_sibling_tag": false,
+            "is_sibling_text": false,
+            "is_date": false,
+            "dayfirst": false,
+            "parse_pdf": false,
+            "from_url": false,
+            "is_current_url": false,
+            "is_text_generated": false,
+            "path": ["div.span9.about-main-image > div"],
+            "extract_tags": {
+              "path": ["div.span6 > img"]
+            }
+          },
+          "incomplete_pub_date": true
+        }
+      }
+    }
+  }
+}
